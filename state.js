@@ -30,6 +30,32 @@ state = {
     localStorage[path] = state[path];
   },
 
+  setArray: function(path) {
+    console.log(path, "=>", state[path]);
+    var elems = document.querySelectorAll("[data-state-path=" + path + "]");
+    for(i = 0; i < elems.length; i++) {
+      var elem = elems[i];
+      var type = elem.getAttribute("data-state-type") || "string";
+      var key = elem.getAttribute("data-state-key");
+      var val = state[path][key];
+      if(val) {
+        switch(type) {
+          case "percentage-array":
+            elem.innerHTML = Math.floor(val * 100);
+            break;
+          case "int-array":
+            elem.innerHTML = Math.floor(val);
+            break;
+          case "log-array":
+            elem.innerHTML = Math.floor(Math.log2(val || 1));
+            break;
+          default:
+            elem.innerHTML = val;
+        }
+      }
+    }
+  },
+
   setup: function() {
     var charArrays = document.querySelectorAll("[data-state-type=char-array]");
     for(var i = 0; i < charArrays.length; i++) {

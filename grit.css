@@ -15,16 +15,25 @@
   color: #006600;
 }
 
-#letters div {
+#letters > div {
+  display: inline-block;
+  text-align: center;
+  vertical-align: center;
+}
+
+#letters .letter-enable {
   width: 1.2em;
   height: 1.2em;
   margin: 2px;
   border-color: gray;
   border-style: solid;
   border-width: 1px;
-  display: inline-block;
-  text-align: center;
-  vertical-align: center;
+}
+
+#letters .letter-accuracy {
+  width: 1.2em;
+  height: 1.2em;
+  margin: 2px;
 }
 
 #letters div.active {
