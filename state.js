@@ -20,6 +20,18 @@ state = {
     localStorage[path] = state[path];
   },
 
+  updateInt: function(event) {
+    console.log("updating int: ", event);
+    var elem = event.target;
+    if(elem.attributes["data-state-type"].value != "int") {
+      console.log("Bad target for updateInt: ", elem);
+      return;
+    }
+    var path = elem.id;
+    state[path] = elem.value;
+    localStorage[path] = state[path];
+  },
+
   setup: function() {
     var strings = document.querySelectorAll("[data-state-type=string]");
     for(var i = 0; i < strings.length; i++) {
@@ -32,6 +44,19 @@ state = {
           child.classList.add("active");
         child.addEventListener("click", state.updateString);
       }
+    }
+
+    var ints = document.querySelectorAll("[data-state-type=int]");
+    console.log(ints);
+    for(var i = 0; i < ints.length; i++) {
+      var elem = ints[i];
+      var path = elem.id;
+      if(state[path])
+        elem.value = state[path];
+      else
+        state[path] = elem.value;
+      console.log("Adding listener on ", elem);
+      elem.addEventListener("change", state.updateInt);
     }
   },
 

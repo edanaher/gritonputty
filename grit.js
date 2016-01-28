@@ -51,7 +51,10 @@ var generateSentence = function(length) {
 }
 
 var checkLetter = function(event) {
+  if(document.querySelector(":focus")) return;
   var active = document.querySelector("#words .active");
+  if(!active && event.keyCode != 13)
+    return;
   if(event.keyCode == 8) { // backspace
     var prev = active.previousSibling;
     console.log("backspace: ", prev, active)
@@ -83,7 +86,7 @@ var checkLetter = function(event) {
 var makeSentence = function(event) {
   var words = document.querySelector("#words");
   words.classList.remove("finished");
-  var sentence = generateSentence(100);
+  var sentence = generateSentence(state["sentence-length"]);
   var spans = [];
   words.innerHTML = "";
   for(i = 0; i < sentence.length; i++) {
