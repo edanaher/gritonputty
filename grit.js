@@ -6,7 +6,6 @@ var generateWeights = function(letters, prefix) {
 
   for(var i = 0; i < letters.length; i++)
     weights[i] = table[prefix + letters[i]] || 0;
-  console.log(prefix, letters, weights);
   return weights;
 };
 
@@ -81,12 +80,29 @@ var makeSentence = function(event) {
   document.addEventListener("keypress", checkLetter);
 };
 
+var generatePage = function() {
+  var lettersDiv = document.getElementById("letters");
+
+  var letters = Object.keys(stats[1].freqs);
+  letters = letters.sort(function(a,b) { return stats[1].freqs[a] < stats[1].freqs[b]})
+  for(var i = 0; i < letters.length; i++) {
+    var letter = letters[i];
+    var div = document.createElement("div");
+    div.setAttribute("data-state-char", letter);
+    div.innerHTML = letter;
+    lettersDiv.appendChild(div);
+  }
+}
+
 var init = function() {
   startButton = document.querySelector("#start");
   if(!startButton) {
     setTimeout(init, 100);
     return;
   }
+
+  generatePage();
+  state.setup();
   startButton.addEventListener("click", makeSentence);
 };
 
