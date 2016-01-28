@@ -21,7 +21,6 @@ state = {
   },
 
   updateInt: function(event) {
-    console.log("updating int: ", event);
     var elem = event.target;
     if(elem.attributes["data-state-type"].value != "int") {
       console.log("Bad target for updateInt: ", elem);
@@ -47,7 +46,6 @@ state = {
     }
 
     var ints = document.querySelectorAll("[data-state-type=int]");
-    console.log(ints);
     for(var i = 0; i < ints.length; i++) {
       var elem = ints[i];
       var path = elem.id;
@@ -63,6 +61,18 @@ state = {
   load: function() {
     for(path in localStorage) {
       state[path] = localStorage[path];
+      var elem = document.getElementById(path);
+      if(!elem) continue;
+      var type = elem.attributes["data-state-type"].value;
+      if(!type) continue;
+      switch(type) {
+        case "int":
+          state[path] = parseInt(state[path]);
+          break;
+        case "float":
+          state[path] = parseFloat(state[path]);
+          break;
+      }
     }
   }
 }
