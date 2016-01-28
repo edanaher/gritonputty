@@ -1,13 +1,13 @@
-words .active {
+#words .active {
   text-decoration: underline;
   color: blue;
 }
 
-words .active.error {
+#words .active.error {
   color: red;
 }
 
-words .error {
+#words .error {
   color: #CC0000;
 }
 
