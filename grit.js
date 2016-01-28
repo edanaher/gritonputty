@@ -1,24 +1,40 @@
+var generateWeights = function(letters, prefix) {
+  weights = [];
+  whichtable = prefix.length < 3 ? "firsts" : "freqs"
+  prefix = prefix.substr(-2);
+  table = stats[prefix.length + 1][whichtable];
+
+  for(var i = 0; i < letters.length; i++)
+    weights[i] = table[prefix + letters[i]] || 0;
+  console.log(prefix, letters, weights);
+  return weights;
+};
+
+var pickOne = function(letters, weights) {
+  var totalWeight = 0;
+  for(var i = 0; i < letters.length; i++)
+    totalWeight += weights[i];
+
+  var r = Math.random() * totalWeight;
+  var w = 0;
+  for(var i = 0; i < letters.length; i++) {
+    w += weights[i];
+    if(w > r) break;
+  }
+  return letters[i];
+}
+
 var generateWord = function(wordLen) {
   var letters = state.letters;
   var weights = [];
   var word = "";
 
   for(var l = 0; l < wordLen; l++) {
-    for(var i = 0; i < letters.length; i++)
-      weights[i] = stats[1].freqs[letters[i]];
+    weights = generateWeights(letters, word);
+    letter = pickOne(letters, weights);
 
-    var totalWeight = 0;
-    for(var i = 0; i < letters.length; i++)
-      totalWeight += weights[i];
-
-    var r = Math.random() * totalWeight;
-    var w = 0;
-    for(var i = 0; i < letters.length; i++) {
-      w += weights[i];
-      if(w > r) break;
-    }
-    if(i == letters.length) break;
-    word += letters[i];
+    if(!letter) break;
+    word += letter;
   }
 
   return word;
