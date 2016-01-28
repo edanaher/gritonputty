@@ -70,7 +70,6 @@ var collectStats = function() {
       speed[entry[2]] = speed[entry[2]] || []
       // (60 seconds/minute) / (5 character/word) * (1000 ms/s) / (ms/char) = words/minute
       speed[entry[2]].push(60 / 5 * 1000 / (entry[0] - lastTime));
-      console.log(entry[0] - lastTime, speed[entry[2]]);
       lastTime = entry[0];
     } else { // incorrect press
       badRun++;
@@ -95,7 +94,6 @@ var collectStats = function() {
     state.speed[c] = state.speed[c] * 0.8 + 0.2 * s;
 
     state.counts[c] = state.counts[c] || 0;
-    console.log(c, state.counts[c], correct[c]);
     state.counts[c] += correct[c];
   }
   state.setArray("accuracy");
@@ -111,7 +109,6 @@ var checkLetter = function(event) {
     return;
   if(event.keyCode == 8) { // backspace
     var prev = active.previousSibling;
-    console.log("backspace: ", prev, active)
     if(prev) {
       active.classList.remove("active");
       prev.classList.add("active");
@@ -119,7 +116,6 @@ var checkLetter = function(event) {
     return;
   }
   if(event.keyCode == 13) { // return
-    console.log("active is ", active);
     if(active == null)
       makeSentence();
     return;

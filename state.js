@@ -31,7 +31,6 @@ state = {
   },
 
   setArray: function(path) {
-    console.log(path, "=>", state[path]);
     var elems = document.querySelectorAll("[data-state-path=" + path + "]");
     for(i = 0; i < elems.length; i++) {
       var elem = elems[i];
@@ -75,7 +74,6 @@ state = {
         elem.value = state[path];
       else
         state[path] = elem.value;
-      console.log("Adding listener on ", elem);
       elem.addEventListener("change", state.updateInt);
     }
   },
