@@ -3,13 +3,12 @@ state = {
 
   updateString: function(event) {
     var elem = event.target;
-    var par = elem.parentNode;
-    if(par.attributes["data-state-type"].value != "string") {
+    if(elem.attributes["data-state-type"].value != "char-array") {
       console.log("Bad target for updateString: ", elem, "under", par);
       return;
     }
-    var path = par.id;
-    var letter = elem.attributes["data-state-char"].value;
+    var path = elem.getAttribute("data-state-path");
+    var letter = elem.getAttribute("data-state-char");
     if(elem.classList.contains("active")) {
       elem.classList.remove("active");
       state[path] = state[path].replace(letter, "");
@@ -32,17 +31,14 @@ state = {
   },
 
   setup: function() {
-    var strings = document.querySelectorAll("[data-state-type=string]");
-    for(var i = 0; i < strings.length; i++) {
-      var elem = strings[i];
-      var path = elem.id;
-      for(var j = 0; j < elem.children.length; j++) {
-        var child = elem.children[j];
-        var c = child.attributes["data-state-char"].value;
-        if(state[path].indexOf(c) >= 0)
-          child.classList.add("active");
-        child.addEventListener("click", state.updateString);
-      }
+    var charArrays = document.querySelectorAll("[data-state-type=char-array]");
+    for(var i = 0; i < charArrays.length; i++) {
+      var elem = charArrays[i];
+      var path = elem.getAttribute("data-state-path");
+      var c = elem.getAttribute("data-state-char");
+      if(state[path].indexOf(c) >= 0)
+        elem.classList.add("active");
+      elem.addEventListener("click", state.updateString);
     }
 
     var ints = document.querySelectorAll("[data-state-type=int]");
@@ -63,7 +59,7 @@ state = {
       state[path] = localStorage[path];
       var elem = document.getElementById(path);
       if(!elem) continue;
-      var type = elem.attributes["data-state-type"].value;
+      var type = elem.getAttribute("data-state-type");
       if(!type) continue;
       switch(type) {
         case "int":

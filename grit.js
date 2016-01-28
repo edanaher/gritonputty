@@ -106,6 +106,8 @@ var generatePage = function() {
   for(var i = 0; i < letters.length; i++) {
     var letter = letters[i];
     var div = document.createElement("div");
+    div.setAttribute("data-state-type", "char-array");
+    div.setAttribute("data-state-path", "letters");
     div.setAttribute("data-state-char", letter);
     div.innerHTML = letter;
     lettersDiv.appendChild(div);
@@ -124,6 +126,7 @@ var init = function() {
   generatePage();
   state.load();
   state.setup();
+  makeSentence();
   startButton.addEventListener("click", makeSentence);
 };
 
