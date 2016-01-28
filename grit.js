@@ -102,6 +102,7 @@ var init = function() {
   }
 
   generatePage();
+  state.load();
   state.setup();
   startButton.addEventListener("click", makeSentence);
 };

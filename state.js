@@ -17,6 +17,7 @@ state = {
       elem.classList.add("active");
       state[path] += letter;
     }
+    localStorage[path] = state[path];
   },
 
   setup: function() {
@@ -31,6 +32,12 @@ state = {
           child.classList.add("active");
         child.addEventListener("click", state.updateString);
       }
+    }
+  },
+
+  load: function() {
+    for(path in localStorage) {
+      state[path] = localStorage[path];
     }
   }
 }
