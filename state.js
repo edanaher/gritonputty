@@ -31,6 +31,8 @@ state = {
   },
 
   setArray: function(path) {
+    if(!state[path])
+      return;
     var elems = document.querySelectorAll("[data-state-path=" + path + "]");
     for(i = 0; i < elems.length; i++) {
       var elem = elems[i];
@@ -53,6 +55,7 @@ state = {
         }
       }
     }
+    localStorage[path] = JSON.stringify(state[path]);
   },
 
   setup: function() {
@@ -76,12 +79,25 @@ state = {
         state[path] = elem.value;
       elem.addEventListener("change", state.updateInt);
     }
+
+    var arrays = document.querySelectorAll("[data-state-key]");
+    var doneArrays = {}
+    for(var i = 0; i < arrays.length; i++) {
+      var elem = arrays[i];
+      var path = elem.getAttribute("data-state-path");
+      if(doneArrays[path])
+        continue;
+      state.setArray(path);
+      doneArrays[path] = true;
+    }
   },
 
   load: function() {
     for(path in localStorage) {
       state[path] = localStorage[path];
       var elem = document.getElementById(path);
+      if(!elem)
+        elem = document.querySelector("[data-state-path=" + path + "]");
       if(!elem) continue;
       var type = elem.getAttribute("data-state-type");
       if(!type) continue;
@@ -92,6 +108,10 @@ state = {
         case "float":
           state[path] = parseFloat(state[path]);
           break;
+        case "percentage-array":
+        case "int-array":
+        case "log-array":
+          state[path] = JSON.parse(state[path]);
       }
     }
   }
