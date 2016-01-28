@@ -1,4 +1,4 @@
-default: js
+default: stats.js
 
 # Files taken from http://norvig.com/mayzner.html
 
@@ -17,7 +17,7 @@ ngrams4.csv:
 download: ngrams1.csv ngrams2.csv ngrams3.csv ngrams4.csv
 
 stats.js: download
-	@echo { > stats.js
+	@echo stats = { > stats.js
 	@cat ngrams1.csv | normalize.rb 1 >> stats.js
 	@echo , >> stats.js
 	@cat ngrams2.csv | normalize.rb 2 >> stats.js
