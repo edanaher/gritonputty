@@ -59,7 +59,6 @@ var makeSentence = function(event) {
     spans.push(s);
     words.appendChild(s);
   }
-  console.log(spans[0]);
   spans[0].classList.add("active");
   document.addEventListener("keypress", checkLetter);
 };
