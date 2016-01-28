@@ -60,6 +60,8 @@ var checkLetter = function(event) {
       active.nextSibling.classList.add("active");
     else
       makeSentence();
+  } else {
+    active.classList.add("error");
   }
   return true;
 }
