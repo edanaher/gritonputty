@@ -8,7 +8,11 @@
 }
 
 #words .error {
-  color: #CC0000;
+  color: #AA0000;
+}
+
+#words.finished {
+  color: #006600;
 }
 
 #letters div {

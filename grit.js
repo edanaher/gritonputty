@@ -51,14 +51,29 @@ var generateSentence = function(length) {
 }
 
 var checkLetter = function(event) {
-  var active = document.querySelector(".active");
+  var active = document.querySelector("#words .active");
+  if(event.keyCode == 8) { // backspace
+    var prev = active.previousSibling;
+    console.log("backspace: ", prev, active)
+    if(prev) {
+      active.classList.remove("active");
+      prev.classList.add("active");
+    }
+    return;
+  }
+  if(event.keyCode == 13) { // return
+    console.log("active is ", active);
+    if(active == null)
+      makeSentence();
+    return;
+  }
   if(event.charCode == active.innerHTML.charCodeAt(0)) {
     active.classList.remove("active");
     var next = active.nextSibling;
     if(next)
-      active.nextSibling.classList.add("active");
+      next.classList.add("active");
     else
-      makeSentence();
+      document.querySelector("#words").classList.add("finished");
   } else {
     active.classList.add("error");
   }
@@ -67,6 +82,7 @@ var checkLetter = function(event) {
 
 var makeSentence = function(event) {
   var words = document.querySelector("#words");
+  words.classList.remove("finished");
   var sentence = generateSentence(100);
   var spans = [];
   words.innerHTML = "";
@@ -77,7 +93,6 @@ var makeSentence = function(event) {
     words.appendChild(s);
   }
   spans[0].classList.add("active");
-  document.addEventListener("keypress", checkLetter);
 };
 
 var generatePage = function() {
@@ -92,6 +107,8 @@ var generatePage = function() {
     div.innerHTML = letter;
     lettersDiv.appendChild(div);
   }
+
+  document.addEventListener("keypress", checkLetter);
 }
 
 var init = function() {
