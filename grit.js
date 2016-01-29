@@ -42,9 +42,9 @@ var generateTargets = function(letters) {
   return mixedTargets;
 }
 
-var generateWeights = function(letters, targets, prefix, suffix) {
+var generateWeights = function(letters, targets, prefix, suffix, start) {
   var weights = [];
-  var whichtable = "freqs";
+  var whichtable = start ? "firsts" : "freqs";
   var ngramLength = prefix ? prefix.length + 1 : suffix.length + 1
   if(ngramLength > 3)
     ngramLength = 3;
@@ -78,7 +78,7 @@ var generateWord = function(wordLen) {
   var pivotPos = Math.floor(Math.random() * wordLen);
 
   for(var l = pivotPos - 1; l >= 0; l--) {
-    weights = generateWeights(letters, targets, null, word);
+    weights = generateWeights(letters, targets, null, word, l == 0);
     letter = pickOne(letters, weights);
 
     if(letter)
@@ -86,7 +86,7 @@ var generateWord = function(wordLen) {
   }
 
   for(var l = pivotPos + 1; l < wordLen; l++) {
-    weights = generateWeights(letters, targets, word);
+    weights = generateWeights(letters, targets, word, null, l < 3);
     letter = pickOne(letters, weights);
 
     if(letter);
