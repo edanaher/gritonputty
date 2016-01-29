@@ -5,14 +5,37 @@ var now = function() {
 }
 
 var generateWeights = function(letters, prefix) {
-  weights = [];
-  whichtable = prefix.length < 3 ? "firsts" : "freqs"
-  prefix = prefix.substr(-2);
-  table = stats[prefix.length + 1][whichtable];
+  var weights = [];
+  var whichtable = prefix.length < 3 ? "firsts" : "freqs"
+  var prefix = prefix.substr(-2);
+  var table = stats[prefix.length + 1][whichtable];
 
-  for(var i = 0; i < letters.length; i++)
-    weights[i] = table[prefix + letters[i]] || 0;
-  return weights;
+  totalweights = {}
+  // Base ngram weight
+  for(var i = 0; i < letters.length; i++) {
+    var l = letters[i];
+    weights[i] = {
+      ngram: table[prefix + l] || 0,
+      rarity: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
+      accuracy: (1 - Math.sqrt(state.accuracy[l] || 0)),
+      speed: 1 / (1 + Math.sqrt(state.speed[l] || 0)),
+    }
+    for(w in weights[i])
+      totalweights[w] = (totalweights[w] || 0) + weights[i][w];
+  }
+
+  mixedWeights = [];
+  for(var i = 0; i < letters.length; i++) {
+    mixedWeights[i] = 0;
+    for(w in weights[i]) {
+      mixedWeights[i] += weights[i][w] / totalweights[w];
+      // limit to 1/5.
+      if(mixedWeights[i] > 4 / 5)
+        mixedWeights[i] = 4 / 5;
+    }
+  }
+
+  return mixedWeights;
 };
 
 var pickOne = function(letters, weights) {
