@@ -10,6 +10,9 @@ var generateWeights = function(letters, prefix) {
   var prefix = prefix.substr(-2);
   var table = stats[prefix.length + 1][whichtable];
 
+  state.counts = state.counts || {};
+  state.accuracy = state.accuracy || {};
+  state.speed = state.speed || {};
   totalweights = {}
   // Base ngram weight
   for(var i = 0; i < letters.length; i++) {
@@ -215,6 +218,11 @@ var generatePage = function() {
   document.addEventListener("keypress", checkLetter);
 }
 
+var reset = function() {
+  state.reset();
+  makeSentence();
+}
+
 var init = function() {
   startButton = document.querySelector("#start");
   if(!startButton) {
@@ -227,6 +235,7 @@ var init = function() {
   state.setup();
   makeSentence();
   startButton.addEventListener("click", makeSentence);
+  document.getElementById("reset").addEventListener("click", reset);
 };
 
 window.onload = init();

@@ -66,6 +66,8 @@ state = {
       var c = elem.getAttribute("data-state-char");
       if(state[path].indexOf(c) >= 0)
         elem.classList.add("active");
+      else
+        elem.classList.remove("active");
       elem.addEventListener("click", state.updateString);
     }
 
@@ -114,5 +116,19 @@ state = {
           state[path] = JSON.parse(state[path]);
       }
     }
+  },
+
+  reset: function() {
+    for(path in state) {
+      console.log("Trying to reset", path);
+      if(state[path] instanceof Function)
+        continue;
+      console.log("Resetting", path);
+      delete state[path];
+      localStorage.removeItem(path);
+    }
+
+    state.letters = "sieontrah";
+    state.setup();
   }
 }
