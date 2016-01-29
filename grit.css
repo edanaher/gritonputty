@@ -38,3 +38,18 @@
 #letters div.active {
   background-color: #AAAAFF;
 }
+
+.button {
+  background-color: #CCCCCC;
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px;
+  padding: 4px;
+  margin: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.button-wrapper {
+  margin: 4px;
+}
