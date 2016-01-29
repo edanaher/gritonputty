@@ -152,6 +152,28 @@ var collectStats = function() {
   state.setArray("counts");
 }
 
+var checkAddNewLetter = function() {
+  for(var i = 0; i < state.letters.length; i++) {
+    var letter = state.letters[i];
+    if(state.accuracy[letter] < state.unlockAccuracy)
+      return false;
+    if(state.speed[letter] < state.unlockSpeed)
+      return false;
+    if(state.counts[letter] < state.unlockCount)
+      return false;
+  }
+  var letters = Object.keys(stats[1].freqs);
+  letters = letters.sort(function(a,b) { return stats[1].freqs[a] < stats[1].freqs[b]})
+  for(var i = 0; i < letters.length; i++)
+    if(state.letters.indexOf(letters[i]) == -1) {
+      // TODO: this is hacky.
+      state.updateString({ target:
+        document.querySelector("[data-state-path=letters][data-state-char=" + letters[i] + "]")});
+      break;
+    }
+
+  return true;
+}
 
 var checkLetter = function(event) {
   if(document.querySelector(":focus")) return;
@@ -180,6 +202,7 @@ var checkLetter = function(event) {
     else {
       document.querySelector("#words").classList.add("finished");
       collectStats();
+      checkAddNewLetter();
     }
   } else {
     curHistory.push([now(), false, active.innerHTML, String.fromCharCode(event.charCode)])

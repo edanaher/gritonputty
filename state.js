@@ -1,6 +1,10 @@
 state = {
   letters: "sieontrah",
 
+  unlockAccuracy: 0.95,
+  unlockSpeed: 10,
+  unlockCount: 50,
+
   updateString: function(event) {
     var elem = event.target;
     if(elem.attributes["data-state-type"].value != "char-array") {
