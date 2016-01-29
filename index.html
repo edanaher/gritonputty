@@ -7,10 +7,17 @@
 <link rel="stylesheet" type="text/css" href="grit.css" />
 </head>
 <body>
-<div class="button-wrapper"><span id="start" class="button">Start</span></div>
+<div class="button-wrapper"><span id="start" class="button">Start</span><span id="wrong-letter"></span></div>
+
 <div id="words"></div>
 <div id="letters"></div>
 <label>Sentence length: <input type="text" id="sentence-length" data-state-type="int" value="100" /></label>
 <div class="button-wrapper"><span id="reset" class="button">Reset</span></div>
+Unlock new letter with:
+<ul>
+  <li><label>Accuracy <input type="text" id="unlockAccuracy" data-state-type="float" value="95" /></label></li>
+  <li><label>Speed <input type="text" id="unlockSpeed" data-state-type="int" value="10" /></label></li>
+  <li><label>Count <input type="text" id="unlockCount" data-state-type="int" value="64" /></label></li>
+</ul>
 </body>
 </html>

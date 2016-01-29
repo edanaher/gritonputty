@@ -1,10 +1,6 @@
 state = {
   letters: "sieontrah",
 
-  unlockAccuracy: 0.95,
-  unlockSpeed: 10,
-  unlockCount: 50,
-
   updateString: function(event) {
     var elem = event.target;
     if(elem.attributes["data-state-type"].value != "char-array") {
@@ -30,7 +26,18 @@ state = {
       return;
     }
     var path = elem.id;
-    state[path] = elem.value;
+    state[path] = parseInt(elem.value);
+    localStorage[path] = state[path];
+  },
+
+  updateFloat: function(event) {
+    var elem = event.target;
+    if(elem.attributes["data-state-type"].value != "float") {
+      console.log("Bad target for updateFloat: ", elem);
+      return;
+    }
+    var path = elem.id;
+    state[path] = parseFloat(elem.value);
     localStorage[path] = state[path];
   },
 
@@ -82,8 +89,19 @@ state = {
       if(state[path])
         elem.value = state[path];
       else
-        state[path] = elem.value;
+        state[path] = parseFloat(elem.value);
       elem.addEventListener("change", state.updateInt);
+    }
+
+    var floats = document.querySelectorAll("[data-state-type=float]");
+    for(var i = 0; i < floats.length; i++) {
+      var elem = floats[i];
+      var path = elem.id;
+      if(state[path])
+        elem.value = state[path];
+      else
+        state[path] = parseFloat(elem.value);
+      elem.addEventListener("change", state.updateFloat);
     }
 
     var arrays = document.querySelectorAll("[data-state-key]");
