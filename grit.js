@@ -21,6 +21,11 @@ var pickOne = function(letters, weights) {
 var generateTargets = function(letters) {
   var targets = [];
   var totalTargets = {};
+
+  state.counts = state.counts || {};
+  state.accuracy = state.accuracy || {};
+  state.speed = state.speed || {};
+
   for(var i = 0; i < letters.length; i++) {
     var l = letters[i];
     targets[i] = {
@@ -54,11 +59,6 @@ var generateWeights = function(letters, targets, prefix, suffix, start) {
     prefix = prefix.substr(-2);
   else
     suffix = suffix.substr(0, 2);
-
-  state.counts = state.counts || {};
-  state.accuracy = state.accuracy || {};
-  state.speed = state.speed || {};
-  totalweights = {}
 
   for(var i = 0; i < letters.length; i++) {
     var l = letters[i];
