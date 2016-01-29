@@ -4,43 +4,6 @@ var now = function() {
   return (new Date()).getTime();
 }
 
-var generateWeights = function(letters, prefix) {
-  var weights = [];
-  var whichtable = prefix.length < 3 ? "firsts" : "freqs"
-  var prefix = prefix.substr(-2);
-  var table = stats[prefix.length + 1][whichtable];
-
-  state.counts = state.counts || {};
-  state.accuracy = state.accuracy || {};
-  state.speed = state.speed || {};
-  totalweights = {}
-  // Base ngram weight
-  for(var i = 0; i < letters.length; i++) {
-    var l = letters[i];
-    weights[i] = {
-      ngram: table[prefix + l] || 0,
-      rarity: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
-      accuracy: (1 - Math.sqrt(state.accuracy[l] || 0)),
-      speed: 1 / (1 + Math.sqrt(state.speed[l] || 0)),
-    }
-    for(w in weights[i])
-      totalweights[w] = (totalweights[w] || 0) + weights[i][w];
-  }
-
-  mixedWeights = [];
-  for(var i = 0; i < letters.length; i++) {
-    mixedWeights[i] = 0;
-    for(w in weights[i]) {
-      mixedWeights[i] += weights[i][w] / totalweights[w];
-      // limit to 1/5.
-      if(mixedWeights[i] > 4 / 5)
-        mixedWeights[i] = 4 / 5;
-    }
-  }
-
-  return mixedWeights;
-};
-
 var pickOne = function(letters, weights) {
   var totalWeight = 0;
   for(var i = 0; i < letters.length; i++)
@@ -55,17 +18,79 @@ var pickOne = function(letters, weights) {
   return letters[i];
 }
 
+var generateTargets = function(letters) {
+  var targets = [];
+  var totalTargets = {};
+  for(var i = 0; i < letters.length; i++) {
+    var l = letters[i];
+    targets[i] = {
+      rarity: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
+      accuracy: (1 - (state.accuracy[l] || 0)),
+      speed: 1 / (1 + Math.sqrt(state.speed[l] || 0)),
+    }
+    for(var w in targets[i])
+      totalTargets[w] = (totalTargets[w] || 0) + targets[i][w];
+  }
+
+  mixedTargets = [];
+  for(var i = 0; i < letters.length; i++) {
+    mixedTargets[i] = 0;
+    for(w in targets[i])
+      mixedTargets[i] += targets[i][w] / totalTargets[w];
+  }
+
+  return mixedTargets;
+}
+
+var generateWeights = function(letters, targets, prefix, suffix) {
+  var weights = [];
+  var whichtable = "freqs";
+  var ngramLength = prefix ? prefix.length + 1 : suffix.length + 1
+  if(ngramLength > 3)
+    ngramLength = 3;
+  var table = stats[ngramLength][whichtable];
+
+  if(prefix)
+    prefix = prefix.substr(-2);
+  else
+    suffix = suffix.substr(0, 2);
+
+  state.counts = state.counts || {};
+  state.accuracy = state.accuracy || {};
+  state.speed = state.speed || {};
+  totalweights = {}
+
+  for(var i = 0; i < letters.length; i++) {
+    var l = letters[i];
+    var ngram = prefix ? prefix + l : l + suffix;
+    weights[i] = (table[ngram] || 0) * Math.sqrt(targets[i]);
+  }
+
+  return weights;
+};
+
 var generateWord = function(wordLen) {
   var letters = state.letters;
   var weights = [];
-  var word = "";
 
-  for(var l = 0; l < wordLen; l++) {
-    weights = generateWeights(letters, word);
+  var targets = generateTargets(letters);
+  var word = pickOne(letters, targets);
+  var pivotPos = Math.floor(Math.random() * wordLen);
+
+  for(var l = pivotPos - 1; l >= 0; l--) {
+    weights = generateWeights(letters, targets, null, word);
     letter = pickOne(letters, weights);
 
-    if(!letter) break;
-    word += letter;
+    if(letter)
+      word = letter + word;
+  }
+
+  for(var l = pivotPos + 1; l < wordLen; l++) {
+    weights = generateWeights(letters, targets, word);
+    letter = pickOne(letters, weights);
+
+    if(letter);
+      word += letter;
   }
 
   return word;
