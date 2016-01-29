@@ -193,8 +193,10 @@ var checkLetter = function(event) {
       makeSentence();
     return;
   }
+  var wrongLetter = document.getElementById("wrong-letter");
   if(event.charCode == active.innerHTML.charCodeAt(0)) {
-    curHistory.push([now(), true, active.innerHTML])
+    curHistory.push([now(), true, active.innerHTML]);
+    wrongLetter.innerHTML = "";
     active.classList.remove("active");
     var next = active.nextSibling;
     if(next)
@@ -206,6 +208,7 @@ var checkLetter = function(event) {
     }
   } else {
     curHistory.push([now(), false, active.innerHTML, String.fromCharCode(event.charCode)])
+    wrongLetter.innerHTML = String.fromCharCode(event.charCode);
     active.classList.add("error");
   }
   return true;

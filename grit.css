@@ -53,3 +53,9 @@
 .button-wrapper {
   margin: 4px;
 }
+
+#wrong-letter {
+  color: red;
+  margin-left: 10px;
+  font-size: 120%;
+}
