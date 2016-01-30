@@ -112,20 +112,28 @@ var collectStats = function() {
   var incorrect = {}
   var speed = {}
   var lastTime = curHistory[0][0];
-  var badRun = 0;
-  for(var i = 1; i < curHistory.length; i++) {
+  for(var i = 0; i < curHistory.length; i++) {
     var entry = curHistory[i];
-    if(entry[1]) { // correct press
-      correct[entry[2]] = correct[entry[2]] || 0;
-      correct[entry[2]]++;
-      speed[entry[2]] = speed[entry[2]] || []
-      // (60 seconds/minute) / (5 character/word) * (1000 ms/s) / (ms/char) = words/minute
-      speed[entry[2]].push(60 / 5 * 1000 / (entry[0] - lastTime));
+    if(entry[1] == entry[2]) { // correct press
+      for(var c = 0; c < entry[1].length; c++) {
+        var ch = entry[1][c];
+        correct[ch] = correct[ch] || 0;
+        correct[ch]++;
+        if(i > 0) { // No speed for the first character
+          speed[ch] = speed[ch] || []
+          // Split chord timing equally over its letters
+          var charTime = (entry[0] - lastTime) / entry[1].length;
+          // (60 seconds/minute) / (5 character/word) * (1000 ms/s) / (ms/char) = words/minute
+          speed[ch].push(60 / 5 * 1000 / charTime);
+        }
+      }
       lastTime = entry[0];
     } else { // incorrect press
-      badRun++;
-      incorrect[entry[2]] = incorrect[entry[2]] || 0;
-      incorrect[entry[2]]++;
+      for(var c = 0; c < entry[1].length; c++) {
+        var ch = entry[1][c];
+        incorrect[ch] = incorrect[ch] || 0;
+        incorrect[ch]++;
+      }
     }
   }
 
@@ -137,12 +145,14 @@ var collectStats = function() {
     state.accuracy[c] = state.accuracy[c] || 0;
     state.accuracy[c] = state.accuracy[c] * 0.8 + 0.2 * accuracy;
 
-    var s = 0;
-    for(var i = 0; i < speed[c].length; i++)
-      s += speed[c][i];
-    s /= speed[c].length;
-    state.speed[c] = state.speed[c] || 0;
-    state.speed[c] = state.speed[c] * 0.8 + 0.2 * s;
+    if(speed[c]) {
+      var s = 0;
+      for(var i = 0; i < speed[c].length; i++)
+        s += speed[c][i];
+      s /= speed[c].length;
+      state.speed[c] = state.speed[c] || 0;
+      state.speed[c] = state.speed[c] * 0.8 + 0.2 * s;
+    }
 
     state.counts[c] = state.counts[c] || 0;
     state.counts[c] += correct[c];
@@ -200,21 +210,19 @@ var checkLetter = function(event) {
   var keyCorrect = event.charCode == active.innerHTML.charCodeAt(0);
   var chordWrong = chord && lastHistory[1] != lastHistory[2];
   if(chord)
-    console.log("chord:", lastHistory[2] + String.fromCharCode(event.charCode), " in ", now() - lastHistory[0], "ms");
+    console.log("chord:", lastHistory[2] + String.fromCharCode(event.charCode), " in ",
+        now() - lastHistory[0], "ms");
+  var bad = active;
+  var finished = false;
 
   if(keyCorrect && !chordWrong) { // A good keystroke, whether in a chord or not
-    //console.log("Good  keystroke: ", String.fromCharCode(event.charCode));
     active.classList.remove("active");
     var next = active.nextSibling;
     if(next)
       next.classList.add("active");
-    else {
-      document.querySelector("#words").classList.add("finished");
-      collectStats();
-      checkAddNewLetter();
-    }
+    else
+      finished = true;
   } else if(!keyCorrect && !chordWrong) { // The first wrong keystroke of a chord
-    //console.log("Bad first keystroke: ", String.fromCharCode(event.charCode));
     var chordLen = chord ? lastHistory[1].length + 1 : 1;
     active.classList.remove("active");
     active.classList.add("error");
@@ -224,8 +232,6 @@ var checkLetter = function(event) {
     }
     active.classList.add("active");
   } else { // a continuation of a wrong chord
-    //console.log("Continued bad keystroke: ", String.fromCharCode(event.charCode));
-    var bad = active;
     if(chord)
       for(var i = 0; i < lastHistory[1].length; i++)
         bad = bad.nextSibling;
@@ -233,7 +239,7 @@ var checkLetter = function(event) {
   }
 
   if(chord) {
-    lastHistory[1] += active.innerHTML;
+    lastHistory[1] += bad.innerHTML;
     lastHistory[2] += String.fromCharCode(event.charCode);
   } else {
     curHistory.push([now(), active.innerHTML, String.fromCharCode(event.charCode)]);
@@ -244,6 +250,12 @@ var checkLetter = function(event) {
     wrongLetter.innerHTML = lastHistory[2];
   else
     wrongLetter.innerHTML = "";
+
+  if(finished) {
+    document.querySelector("#words").classList.add("finished");
+    collectStats();
+    checkAddNewLetter();
+  }
 
   return true;
 }
