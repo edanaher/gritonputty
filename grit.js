@@ -194,9 +194,16 @@ var checkLetter = function(event) {
     return;
   }
   var wrongLetter = document.getElementById("wrong-letter");
-  if(event.charCode == active.innerHTML.charCodeAt(0)) {
-    curHistory.push([now(), true, active.innerHTML]);
-    wrongLetter.innerHTML = "";
+
+  var lastHistory = curHistory[curHistory.length - 1];
+  var chord = lastHistory && now() - lastHistory[0] < state.chordThreshold;
+  var keyCorrect = event.charCode == active.innerHTML.charCodeAt(0);
+  var chordWrong = chord && lastHistory[1] != lastHistory[2];
+  if(chord)
+    console.log("chord:", lastHistory[2] + String.fromCharCode(event.charCode), " in ", now() - lastHistory[0], "ms");
+
+  if(keyCorrect && !chordWrong) { // A good keystroke, whether in a chord or not
+    //console.log("Good  keystroke: ", String.fromCharCode(event.charCode));
     active.classList.remove("active");
     var next = active.nextSibling;
     if(next)
@@ -206,11 +213,38 @@ var checkLetter = function(event) {
       collectStats();
       checkAddNewLetter();
     }
-  } else {
-    curHistory.push([now(), false, active.innerHTML, String.fromCharCode(event.charCode)])
-    wrongLetter.innerHTML = String.fromCharCode(event.charCode);
+  } else if(!keyCorrect && !chordWrong) { // The first wrong keystroke of a chord
+    //console.log("Bad first keystroke: ", String.fromCharCode(event.charCode));
+    var chordLen = chord ? lastHistory[1].length + 1 : 1;
+    active.classList.remove("active");
     active.classList.add("error");
+    for(var i = 1; i < chordLen; i++) {
+      active = active.previousSibling;
+      active.classList.add("error");
+    }
+    active.classList.add("active");
+  } else { // a continuation of a wrong chord
+    //console.log("Continued bad keystroke: ", String.fromCharCode(event.charCode));
+    var bad = active;
+    if(chord)
+      for(var i = 0; i < lastHistory[1].length; i++)
+        bad = bad.nextSibling;
+    bad.classList.add("error");
   }
+
+  if(chord) {
+    lastHistory[1] += active.innerHTML;
+    lastHistory[2] += String.fromCharCode(event.charCode);
+  } else {
+    curHistory.push([now(), active.innerHTML, String.fromCharCode(event.charCode)]);
+    lastHistory = curHistory[curHistory.length - 1];
+  }
+
+  if(lastHistory[1] != lastHistory[2])
+    wrongLetter.innerHTML = lastHistory[2];
+  else
+    wrongLetter.innerHTML = "";
+
   return true;
 }
 
