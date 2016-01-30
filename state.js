@@ -1,6 +1,22 @@
 state = {
   letters: "sieontrah",
 
+  readElem: function(event) {
+    var elem = event.target;
+    var path = elem.getAttribute("data-state-path") || elem.id;
+    switch(elem.getAttribute("data-state-type")) {
+      case "int":
+        state[path] = parseInt(elem.value);
+        break;
+      case "float":
+        state[path] = parseFloat(elem.value);
+        break;
+      default:
+        state[path] = elem.value;
+    }
+    localStorage[path] = JSON.stringify(state[path]);
+  },
+
   updateString: function(event) {
     var elem = event.target;
     if(elem.attributes["data-state-type"].value != "char-array") {
@@ -69,6 +85,19 @@ state = {
     localStorage[path] = JSON.stringify(state[path]);
   },
 
+  parseValue: function(path, val, type) {
+    switch(type) {
+      case "int":
+        return parseInt(val);
+        break;
+      case "float":
+        return parseFloat(val);
+        break;
+      default:
+        return val;
+    }
+  },
+
   setup: function() {
     var charArrays = document.querySelectorAll("[data-state-type=char-array]");
     for(var i = 0; i < charArrays.length; i++) {
@@ -82,29 +111,23 @@ state = {
       elem.addEventListener("click", state.updateString);
     }
 
-    var ints = document.querySelectorAll("[data-state-type=int]");
-    for(var i = 0; i < ints.length; i++) {
-      var elem = ints[i];
-      var path = elem.id;
+    var elems = document.querySelectorAll("[data-state-type]");
+    for(var i = 0; i < elems.length; i++) {
+      var elem = elems[i];
+      var path = elem.getAttribute("data-state-path") || elem.id;
+      var type = elem.getAttribute("data-state-type");
+
+      if(type.slice(-5) == "array")
+        continue;
+
       if(state[path])
         elem.value = state[path];
       else
-        state[path] = parseFloat(elem.value);
-      elem.addEventListener("change", state.updateInt);
+        state[path] = state.parseValue(path, elem.value, type);
+      elem.addEventListener("change", state.readElem);
     }
 
-    var floats = document.querySelectorAll("[data-state-type=float]");
-    for(var i = 0; i < floats.length; i++) {
-      var elem = floats[i];
-      var path = elem.id;
-      if(state[path])
-        elem.value = state[path];
-      else
-        state[path] = parseFloat(elem.value);
-      elem.addEventListener("change", state.updateFloat);
-    }
-
-    var arrays = document.querySelectorAll("[data-state-key]");
+    var arrays = document.querySelectorAll("[data-state-type$=array]");
     var doneArrays = {}
     for(var i = 0; i < arrays.length; i++) {
       var elem = arrays[i];
@@ -117,32 +140,20 @@ state = {
   },
 
   load: function() {
-    for(path in localStorage) {
+    for(var i = 0; i < localStorage.length; i++) {
+      path = localStorage.key(i);
       state[path] = localStorage[path];
-      var elem = document.getElementById(path);
-      if(!elem)
-        elem = document.querySelector("[data-state-path=" + path + "]");
-      if(!elem) continue;
-      var type = elem.getAttribute("data-state-type");
-      if(!type) continue;
-      switch(type) {
-        case "int":
-          state[path] = parseInt(state[path]);
-          break;
-        case "float":
-          state[path] = parseFloat(state[path]);
-          break;
-        case "percentage-array":
-        case "int-array":
-        case "log-array":
-          state[path] = JSON.parse(state[path]);
+      try {
+        console.log(state[path]);
+        state[path] = JSON.parse(state[path]);
+      } catch(e) {
+        console.log("Error parsing JSON: ", e, "on", path, "=>", state[path]);
       }
     }
   },
 
   reset: function() {
     for(path in state) {
-      console.log("Trying to reset", path);
       if(state[path] instanceof Function)
         continue;
       console.log("Resetting", path);
