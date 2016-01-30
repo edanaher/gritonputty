@@ -206,12 +206,12 @@ var checkLetter = function(event) {
   var wrongLetter = document.getElementById("wrong-letter");
 
   var lastHistory = curHistory[curHistory.length - 1];
-  var chord = lastHistory && now() - lastHistory[0] < state.chordThreshold;
+  var chord = lastHistory && event.timeStamp - lastHistory[0] < state.chordThreshold;
   var keyCorrect = event.charCode == active.innerHTML.charCodeAt(0);
   var chordWrong = chord && lastHistory[1] != lastHistory[2];
   if(chord)
     console.log("chord:", lastHistory[2] + String.fromCharCode(event.charCode), " in ",
-        now() - lastHistory[0], "ms");
+        event.timeStamp - lastHistory[0], "ms");
   var bad = active;
   var finished = false;
 
@@ -242,7 +242,7 @@ var checkLetter = function(event) {
     lastHistory[1] += bad.innerHTML;
     lastHistory[2] += String.fromCharCode(event.charCode);
   } else {
-    curHistory.push([now(), active.innerHTML, String.fromCharCode(event.charCode)]);
+    curHistory.push([event.timeStamp, active.innerHTML, String.fromCharCode(event.charCode)]);
     lastHistory = curHistory[curHistory.length - 1];
   }
 
