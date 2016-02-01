@@ -57,16 +57,15 @@ state = {
     localStorage[path] = state[path];
   },
 
-  setArray: function(path) {
-    if(!state[path])
-      return;
+  setArray: function(path, def) {
+    state[path] = state[path] || {}
     var elems = document.querySelectorAll("[data-state-path=" + path + "]");
     for(i = 0; i < elems.length; i++) {
       var elem = elems[i];
       var type = elem.getAttribute("data-state-type") || "string";
       var key = elem.getAttribute("data-state-key");
-      var val = state[path][key];
-      if(val) {
+      var val = state[path][key] || def;
+      if(val !== undefined) {
         switch(type) {
           case "percentage-array":
             elem.innerHTML = Math.floor(val * 100);
@@ -120,7 +119,7 @@ state = {
       if(type.slice(-5) == "array")
         continue;
 
-      if(state[path])
+      if(state[path] || elem.tagName != "INPUT")
         elem.value = state[path];
       else
         state[path] = state.parseValue(path, elem.value, type);
@@ -134,7 +133,7 @@ state = {
       var path = elem.getAttribute("data-state-path");
       if(doneArrays[path])
         continue;
-      state.setArray(path);
+      state.setArray(path, 0);
       doneArrays[path] = true;
     }
   },
