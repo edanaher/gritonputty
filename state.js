@@ -177,6 +177,15 @@ state = {
         localStorage.unlock = JSON.stringify(unlock);
         localStorage.removeItem(key);
       }
+    var weights = { "statsLetterWeight": "letter",
+                    "statsSentenceWeight": "sentence" };
+    for(key in weights)
+      if(localStorage[key]) {
+        var weight = JSON.parse(localStorage.weight || "{}")
+        weight[weights[key]] = parseFloat(localStorage.weight);
+        localStorage.weight = JSON.stringify(weight);
+        localStorage.removeItem(key);
+      }
   },
 
   reset: function() {

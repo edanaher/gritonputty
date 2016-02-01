@@ -146,7 +146,7 @@ var collectStats = function() {
   for(c in correct) {
     state.counts[c] = state.counts[c] || 0;
 
-    var newWeight = state.statsSentenceWeight + (1-Math.pow(1-state.statsLetterWeight, correct[c]));
+    var newWeight = state.weight.sentence + (1-Math.pow(1-state.weight.letter, correct[c]));
     var letterFraction = correct[c] / (state.counts[c] + correct[c]);
     if(newWeight < letterFraction)
       newWeight = letterFraction;
