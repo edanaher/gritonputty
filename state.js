@@ -57,15 +57,16 @@ state = {
     localStorage[path] = state[path];
   },
 
-  setArray: function(path, def) {
+  setArray: function(path) {
     state[path] = state[path] || {}
     var elems = document.querySelectorAll("[data-state-path=" + path + "]");
     for(i = 0; i < elems.length; i++) {
       var elem = elems[i];
       var type = elem.getAttribute("data-state-type") || "string";
       var key = elem.getAttribute("data-state-key");
+      var def = elem.getAttribute("data-state-default");
       var val = state[path][key] || def;
-      if(val !== undefined) {
+      if(val !== undefined && val !== null) {
         switch(type) {
           case "percentage-array":
             elem.innerHTML = Math.floor(val * 100);
@@ -74,7 +75,8 @@ state = {
             elem.innerHTML = Math.floor(val);
             break;
           case "log-array":
-            elem.innerHTML = Math.floor(Math.log2(val || 1));
+            val = parseFloat(val);
+            elem.innerHTML = val > 0 ? Math.floor(Math.log2(val)) : "-";
             break;
           default:
             elem.innerHTML = val;

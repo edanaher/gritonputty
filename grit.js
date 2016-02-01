@@ -41,7 +41,8 @@ var generateTargets = function(letters) {
   for(var i = 0; i < letters.length; i++) {
     mixedTargets[i] = 0;
     for(w in targets[i])
-      mixedTargets[i] += targets[i][w] / totalTargets[w];
+      if(totalTargets[w])
+        mixedTargets[i] += targets[i][w] / totalTargets[w];
   }
 
   return mixedTargets;
@@ -289,6 +290,7 @@ var createDataType = function(clas, type, path, key, def) {
   div.setAttribute("data-state-type", type);
   div.setAttribute("data-state-path", path);
   div.setAttribute("data-state-key", key);
+  div.setAttribute("data-state-default", def);
   div.innerHTML = def;
   return div;
 }
