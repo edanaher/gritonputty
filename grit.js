@@ -15,6 +15,8 @@ var pickOne = function(letters, weights) {
     w += weights[i];
     if(w > r) break;
   }
+  if(i == letters.length)
+    console.log("Failed to pick letter from", letters, "according to", weights);
   return letters[i];
 }
 
@@ -90,7 +92,7 @@ var generateWord = function(wordLen) {
     weights = generateWeights(letters, targets, word, null, l < 3);
     letter = pickOne(letters, weights);
 
-    if(letter);
+    if(letter)
       word += letter;
   }
 
