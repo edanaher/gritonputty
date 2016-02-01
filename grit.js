@@ -96,6 +96,9 @@ var generateWord = function(wordLen) {
       word += letter;
   }
 
+  if(word.length < wordLen)
+    console.log("word is too short: ", word);
+
   return word;
 }
 
@@ -107,6 +110,8 @@ var generateSentence = function(length) {
       break;
     sentence += " ";
   }
+  if(sentence.length < length)
+    console.log("sentence is too short: ", sentence);
   return sentence;
 }
 
@@ -286,18 +291,23 @@ var makeSentence = function(event) {
   curHistory = [];
 };
 
-var createDataType = function(clas, type, path, key, def) {
+var createDataType = function(clas, type, path, def) {
   var div = document.createElement("div");
   div.classList.add(clas);
   div.setAttribute("data-state-type", type);
   div.setAttribute("data-state-path", path);
-  div.setAttribute("data-state-key", key);
   div.setAttribute("data-state-default", def);
   div.innerHTML = def;
   return div;
 }
 
 var generatePage = function() {
+  var inputs = document.querySelectorAll("input[data-state-type]");
+  for(var i = 0; i < inputs.length; i++)
+    if(!inputs[i].getAttribute("data-state-default"))
+       inputs[i].setAttribute("data-state-default", inputs[i].value);
+
+
   var lettersDiv = document.getElementById("letters");
 
   var letters = Object.keys(stats[1].freqs);
@@ -315,13 +325,13 @@ var generatePage = function() {
     div.innerHTML = letter;
     container.appendChild(div);
 
-
-    container.appendChild(createDataType("letter-accuracy", "percentage-array", "accuracy", letter, "0"));
-    container.appendChild(createDataType("letter-speed", "int-array", "speed", letter, "0"));
-    container.appendChild(createDataType("letter-counts", "log-array", "counts", letter, "0"));
+    container.appendChild(createDataType("letter-accuracy", "percentage", "accuracy-" + letter, "0"));
+    container.appendChild(createDataType("letter-speed", "int", "speed-" + letter, "0"));
+    container.appendChild(createDataType("letter-counts", "log", "counts-" + letter, "0"));
 
     lettersDiv.appendChild(container);
   }
+
 
   document.addEventListener("keypress", checkLetter);
 }

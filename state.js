@@ -30,6 +30,26 @@ state = {
     localStorage[head] = JSON.stringify(state[head]);
   },
 
+  setElem: function(elem, def) {
+    var path = elem.getAttribute("data-state-path") || elem.id;
+    var type = elem.getAttribute("data-state-type");
+
+    if(type == "char-array")
+      return;
+
+    [head, obj, key] = state.getPath(path);
+
+    if(obj[key] === null || obj[key] === undefined)
+      obj[key] = state.parseValue(def, type);
+
+    if(obj[key] && elem.tagName == "INPUT")
+      elem.value = obj[key];
+    else if(obj[key] !== null && obj[key] !== undefined)
+      elem.innerHTML = state.displayValue(obj[key], type);
+    else if(elem.tagName == "INPUT")
+      obj[key] = state.parseValue(elem.value, type);
+  },
+
   updateString: function(event) {
     var elem = event.target;
     if(elem.attributes["data-state-type"].value != "char-array") {
@@ -72,30 +92,9 @@ state = {
 
   setArray: function(path) {
     state[path] = state[path] || {}
-    var elems = document.querySelectorAll("[data-state-path=" + path + "]");
-    for(i = 0; i < elems.length; i++) {
-      var elem = elems[i];
-      var type = elem.getAttribute("data-state-type") || "string";
-      var key = elem.getAttribute("data-state-key");
-      var def = elem.getAttribute("data-state-default");
-      var val = state[path][key] || def;
-      if(val !== undefined && val !== null) {
-        switch(type) {
-          case "percentage-array":
-            elem.innerHTML = Math.floor(val * 100);
-            break;
-          case "int-array":
-            elem.innerHTML = Math.floor(val);
-            break;
-          case "log-array":
-            val = parseFloat(val);
-            elem.innerHTML = val > 0 ? Math.floor(Math.log2(val)) : "-";
-            break;
-          default:
-            elem.innerHTML = val;
-        }
-      }
-    }
+    var elems = document.querySelectorAll("[data-state-path^=" + path + "]");
+    for(i = 0; i < elems.length; i++)
+      state.setElem(elems[i]);
     localStorage[path] = JSON.stringify(state[path]);
   },
 
@@ -105,8 +104,24 @@ state = {
         return parseInt(val);
         break;
       case "float":
+      case "percentage":
+      case "log":
         return parseFloat(val);
         break;
+      default:
+        return val;
+    }
+  },
+
+  displayValue: function(val, type) {
+    switch(type) {
+      case "int":
+        return Math.floor(val);
+      case "percentage":
+        return Math.floor(val * 100);
+      case "log":
+        val = parseFloat(val);
+        return val > 0 ? Math.floor(Math.log2(val)) : "-";
       default:
         return val;
     }
@@ -127,19 +142,8 @@ state = {
 
     var elems = document.querySelectorAll("[data-state-type]");
     for(var i = 0; i < elems.length; i++) {
-      var elem = elems[i];
-      var path = elem.getAttribute("data-state-path") || elem.id;
-      var type = elem.getAttribute("data-state-type");
-
-      if(type.slice(-5) == "array")
-        continue;
-
-      [head, obj, key] = state.getPath(path);
-      if(obj[key] || elem.tagName != "INPUT")
-        elem.value = obj[key];
-      else
-        obj[key] = state.parseValue(elem.value, type);
-      elem.addEventListener("change", state.readElem);
+      state.setElem(elems[i], elems[i].getAttribute("data-state-default"));
+      elems[i].addEventListener("change", state.readElem);
     }
 
     var arrays = document.querySelectorAll("[data-state-type$=array]");
