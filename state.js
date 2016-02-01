@@ -68,28 +68,6 @@ state = {
     localStorage[path] = state[path];
   },
 
-  updateInt: function(event) {
-    var elem = event.target;
-    if(elem.attributes["data-state-type"].value != "int") {
-      console.log("Bad target for updateInt: ", elem);
-      return;
-    }
-    var path = elem.id;
-    state[path] = parseInt(elem.value);
-    localStorage[path] = state[path];
-  },
-
-  updateFloat: function(event) {
-    var elem = event.target;
-    if(elem.attributes["data-state-type"].value != "float") {
-      console.log("Bad target for updateFloat: ", elem);
-      return;
-    }
-    var path = elem.id;
-    state[path] = parseFloat(elem.value);
-    localStorage[path] = state[path];
-  },
-
   setArray: function(path) {
     state[path] = state[path] || {}
     var elems = document.querySelectorAll("[data-state-path^=" + path + "]");
