@@ -77,6 +77,15 @@ var generateWord = function(wordLen) {
   var weights = [];
 
   var targets = generateTargets(letters);
+
+  var totalTargets = 0;
+  state.targets = {};
+  for(var i = 0; i < letters.length; i++)
+    totalTargets += targets[i];
+  for(var i = 0; i < letters.length; i++)
+    state.targets[letters[i]] = targets[i] / totalTargets;
+  state.setArray("targets", "0");
+
   var word = pickOne(letters, targets);
   var pivotPos = Math.floor(Math.random() * wordLen);
 
@@ -104,7 +113,7 @@ var generateWord = function(wordLen) {
 
 var generateSentence = function(length) {
   var sentence = "";
-  for(i = 0; i < length; i++) {
+  for(var i = 0; i < length; i++) {
     sentence += generateWord(3 + Math.floor(Math.random() * 4));
     if(sentence.length > length)
       break;
@@ -281,7 +290,7 @@ var makeSentence = function(event) {
   var sentence = generateSentence(state["sentenceLength"]);
   var spans = [];
   words.innerHTML = "";
-  for(i = 0; i < sentence.length; i++) {
+  for(var i = 0; i < sentence.length; i++) {
     var s = document.createElement("span");
     s.innerHTML = sentence[i];
     spans.push(s);
@@ -328,6 +337,7 @@ var generatePage = function() {
     container.appendChild(createDataType("letter-accuracy", "percentage", "accuracy-" + letter, "0"));
     container.appendChild(createDataType("letter-speed", "int", "speed-" + letter, "0"));
     container.appendChild(createDataType("letter-counts", "log", "counts-" + letter, "0"));
+    container.appendChild(createDataType("letter-targets", "percentage", "targets-" + letter, "0"));
 
     lettersDiv.appendChild(container);
   }

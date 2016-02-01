@@ -68,11 +68,11 @@ state = {
     localStorage[path] = state[path];
   },
 
-  setArray: function(path) {
+  setArray: function(path, def) {
     state[path] = state[path] || {}
     var elems = document.querySelectorAll("[data-state-path^=" + path + "]");
     for(i = 0; i < elems.length; i++)
-      state.setElem(elems[i]);
+      state.setElem(elems[i], def);
     localStorage[path] = JSON.stringify(state[path]);
   },
 
