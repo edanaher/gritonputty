@@ -141,7 +141,12 @@ var collectStats = function() {
   state.speed = state.speed || {}
   state.counts = state.counts || {}
   for(c in correct) {
-    var newWeight = state.statsSentenceWeight + state.statsLetterWeight * correct[c];
+    state.counts[c] = state.counts[c] || 0;
+
+    var newWeight = state.statsSentenceWeight + (1-Math.pow(1-state.statsLetterWeight, correct[c]));
+    var letterFraction = correct[c] / (state.counts[c] + correct[c]);
+    if(newWeight < letterFraction)
+      newWeight = letterFraction;
     var oldWeight = 1 - newWeight;
 
     var accuracy = correct[c] / (correct[c] + (incorrect[c] || 0));
@@ -157,7 +162,6 @@ var collectStats = function() {
       state.speed[c] = state.speed[c] * oldWeight + newWeight * s;
     }
 
-    state.counts[c] = state.counts[c] || 0;
     state.counts[c] += correct[c];
   }
   state.setArray("accuracy");
