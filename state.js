@@ -1,20 +1,33 @@
 state = {
   letters: "sieontrah",
 
+  getPath(path) {
+    path = path.split("-");
+    var obj = state;
+    for(var i = 0; i < path.length - 1; i++) {
+      obj[path[i]] = obj[path[i]] || {};
+      obj = obj[path[i]];
+    }
+    key = path[path.length - 1];
+    return [path[0], obj, key];
+  },
+
   readElem: function(event) {
     var elem = event.target;
     var path = elem.getAttribute("data-state-path") || elem.id;
+    var [head, obj, key] = state.getPath(path);
+
     switch(elem.getAttribute("data-state-type")) {
       case "int":
-        state[path] = parseInt(elem.value);
+        obj[key] = parseInt(elem.value);
         break;
       case "float":
-        state[path] = parseFloat(elem.value);
+        obj[key] = parseFloat(elem.value);
         break;
       default:
-        state[path] = elem.value;
+        obj[path] = elem.value;
     }
-    localStorage[path] = JSON.stringify(state[path]);
+    localStorage[head] = JSON.stringify(state[head]);
   },
 
   updateString: function(event) {
@@ -86,7 +99,7 @@ state = {
     localStorage[path] = JSON.stringify(state[path]);
   },
 
-  parseValue: function(path, val, type) {
+  parseValue: function(val, type) {
     switch(type) {
       case "int":
         return parseInt(val);
@@ -121,10 +134,11 @@ state = {
       if(type.slice(-5) == "array")
         continue;
 
-      if(state[path] || elem.tagName != "INPUT")
-        elem.value = state[path];
+      [head, obj, key] = state.getPath(path);
+      if(obj[key] || elem.tagName != "INPUT")
+        elem.value = obj[key];
       else
-        state[path] = state.parseValue(path, elem.value, type);
+        obj[key] = state.parseValue(elem.value, type);
       elem.addEventListener("change", state.readElem);
     }
 
@@ -145,7 +159,6 @@ state = {
       path = localStorage.key(i);
       state[path] = localStorage[path];
       try {
-        console.log(state[path]);
         state[path] = JSON.parse(state[path]);
       } catch(e) {
         console.log("Error parsing JSON: ", e, "on", path, "=>", state[path]);
@@ -153,11 +166,23 @@ state = {
     }
   },
 
+  migrate: function() {
+    var unlocks = { "unlockAccuracy": "accuracy",
+                    "unlockSpeed": "speed",
+                    "unlockCount": "count" };
+    for(key in unlocks)
+      if(localStorage[key]) {
+        var unlock = JSON.parse(localStorage.unlock || "{}")
+        unlock[unlocks[key]] = parseFloat(localStorage.unlockAccuracy);
+        localStorage.unlock = JSON.stringify(unlock);
+        localStorage.removeItem(key);
+      }
+  },
+
   reset: function() {
     for(path in state) {
       if(state[path] instanceof Function)
         continue;
-      console.log("Resetting", path);
       delete state[path];
       localStorage.removeItem(path);
     }

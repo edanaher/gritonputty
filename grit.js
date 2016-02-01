@@ -175,11 +175,11 @@ var collectStats = function() {
 var checkAddNewLetter = function() {
   for(var i = 0; i < state.letters.length; i++) {
     var letter = state.letters[i];
-    if(state.accuracy[letter] < state.unlockAccuracy)
+    if(state.accuracy[letter] < state.unlock.accuracy)
       return false;
-    if(state.speed[letter] < state.unlockSpeed)
+    if(state.speed[letter] < state.unlock.speed)
       return false;
-    if(state.counts[letter] < state.unlockCount)
+    if(state.counts[letter] < state.unlock.count)
       return false;
   }
   var letters = Object.keys(stats[1].freqs);
@@ -273,7 +273,7 @@ var checkLetter = function(event) {
 var makeSentence = function(event) {
   var words = document.querySelector("#words");
   words.classList.remove("finished");
-  var sentence = generateSentence(state["sentence-length"]);
+  var sentence = generateSentence(state["sentenceLength"]);
   var spans = [];
   words.innerHTML = "";
   for(i = 0; i < sentence.length; i++) {
@@ -339,6 +339,7 @@ var init = function() {
   }
 
   generatePage();
+  state.migrate();
   state.load();
   state.setup();
   makeSentence();
