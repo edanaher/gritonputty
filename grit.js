@@ -4,15 +4,16 @@ var now = function() {
   return (new Date()).getTime();
 }
 
-var pickOne = function(letters, weights) {
+var pickOne = function(letters, weights, e) {
+  e = e || 1
   var totalWeight = 0;
   for(var i = 0; i < letters.length; i++)
-    totalWeight += weights[i];
+    totalWeight += Math.pow(weights[i], e);
 
   var r = Math.random() * totalWeight;
   var w = 0;
   for(var i = 0; i < letters.length; i++) {
-    w += weights[i];
+    w += Math.pow(weights[i], e);
     if(w > r) break;
   }
   if(i == letters.length)
@@ -89,7 +90,7 @@ var generateWord = function(wordLen) {
     state.targets[letters[i]] = targets[i] / totalTargets;
   state.setArray("targets", "0");
 
-  var word = pickOne(letters, targets);
+  var word = pickOne(letters, targets, state.targetTypeWeights.pivotExponent);
   var pivotPos = Math.floor(Math.random() * wordLen);
 
   for(var l = pivotPos - 1; l >= 0; l--) {
