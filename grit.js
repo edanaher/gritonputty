@@ -28,11 +28,14 @@ var generateTargets = function(letters) {
   state.accuracy = state.accuracy || {};
   state.speed = state.speed || {};
 
+  weights = state.targetTypeWeights;
+  weights = weights || { rarity: 1, accuracy: 1, speed: 1 };
+
   for(var i = 0; i < letters.length; i++) {
     var l = letters[i];
     targets[i] = {
       rarity: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
-      accuracy: (1 - (state.accuracy[l] || 0)),
+      accuracy: (1 - (state.accuracy[l] || 0)*(state.accuracy[l] || 0)),
       speed: 1 / (1 + Math.sqrt(state.speed[l] || 0)),
     }
     for(var w in targets[i])
@@ -44,7 +47,7 @@ var generateTargets = function(letters) {
     mixedTargets[i] = 0;
     for(w in targets[i])
       if(totalTargets[w])
-        mixedTargets[i] += targets[i][w] / totalTargets[w];
+        mixedTargets[i] += weights[w] * targets[i][w] / totalTargets[w];
   }
 
   return mixedTargets;
