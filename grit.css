@@ -31,6 +31,10 @@
   vertical-align: center;
 }
 
+#letters .low-stat {
+  color: red;
+}
+
 #letters .letter-accuracy {
   margin: 2px;
 }

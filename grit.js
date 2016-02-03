@@ -31,6 +31,23 @@ var letterOverThreshold = function(letter) {
   return true;
 }
 
+var colorThresholds = function() {
+  var thresholds = ["accuracy", "speed", "counts"];
+  for(t in thresholds) {
+    var threshold = thresholds[t];
+    for(l in state[threshold]) {
+      var elem = document.querySelector("[data-state-path=" + threshold + "-" + l);
+      if(!elem) continue;
+      if(!state.counts[l]) continue;
+      console.log(threshold, l, elem);
+      if(state[threshold][l] < state.unlock[threshold == "counts" ? "count" : threshold])
+        elem.classList.add("low-stat");
+      else
+        elem.classList.remove("low-stat");
+    }
+  }
+}
+
 var generateTargets = function(letters) {
   var targets = [];
   var totalTargets = {};
@@ -53,8 +70,6 @@ var generateTargets = function(letters) {
     for(var w in targets[i])
       totalTargets[w] = (totalTargets[w] || 0) + targets[i][w];
   }
-
-  console.log(targets[1].threshold);
 
   mixedTargets = [];
   for(var i = 0; i < letters.length; i++) {
@@ -300,6 +315,7 @@ var makeSentence = function(event) {
   var words = document.querySelector("#words");
   words.classList.remove("finished");
   var sentence = generateSentence(state["sentenceLength"]);
+  colorThresholds();
   var spans = [];
   words.innerHTML = "";
   for(var i = 0; i < sentence.length; i++) {
