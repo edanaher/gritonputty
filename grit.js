@@ -40,7 +40,7 @@ var colorThresholds = function() {
       if(!elem) continue;
       if(!state.counts[l]) continue;
       console.log(threshold, l, elem);
-      if(state[threshold][l] < state.unlock[threshold == "counts" ? "count" : threshold])
+      if(state[threshold][l] < state.unlock[threshold])
         elem.classList.add("low-stat");
       else
         elem.classList.remove("low-stat");
