@@ -26,7 +26,7 @@ var letterOverThreshold = function(letter) {
     return false;
   if(state.speed[letter] < state.unlock.speed)
     return false;
-  if(state.counts[letter] < state.unlock.count)
+  if(state.counts[letter] < state.unlock.counts)
     return false;
   return true;
 }
