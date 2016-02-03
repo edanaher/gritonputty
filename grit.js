@@ -39,7 +39,6 @@ var colorThresholds = function() {
       var elem = document.querySelector("[data-state-path=" + threshold + "-" + l);
       if(!elem) continue;
       if(!state.counts[l]) continue;
-      console.log(threshold, l, elem);
       if(state[threshold][l] < state.unlock[threshold])
         elem.classList.add("low-stat");
       else
@@ -57,12 +56,12 @@ var generateTargets = function(letters) {
   state.speed = state.speed || {};
 
   weights = state.targetTypeWeights;
-  weights = weights || { rarity: 1, accuracy: 1, speed: 1, threshold: 1 };
+  weights = weights || { counts: 1, accuracy: 1, speed: 1, threshold: 1 };
 
   for(var i = 0; i < letters.length; i++) {
     var l = letters[i];
     targets[i] = {
-      rarity: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
+      counts: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
       accuracy: (1 - (state.accuracy[l] || 0)*(state.accuracy[l] || 0)),
       speed: 1 / (1 + Math.sqrt(state.speed[l] || 0)),
       threshold: letterOverThreshold(l) ? 0 : 1,
