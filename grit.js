@@ -215,6 +215,7 @@ var collectStats = function() {
   state.setArray("accuracy");
   state.setArray("speed");
   state.setArray("counts");
+  colorThresholds();
 }
 
 var checkAddNewLetter = function() {
