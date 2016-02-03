@@ -21,6 +21,16 @@ var pickOne = function(letters, weights, e) {
   return letters[i];
 }
 
+var letterOverThreshold = function(letter) {
+  if(state.accuracy[letter] < state.unlock.accuracy)
+    return false;
+  if(state.speed[letter] < state.unlock.speed)
+    return false;
+  if(state.counts[letter] < state.unlock.count)
+    return false;
+  return true;
+}
+
 var generateTargets = function(letters) {
   var targets = [];
   var totalTargets = {};
@@ -30,7 +40,7 @@ var generateTargets = function(letters) {
   state.speed = state.speed || {};
 
   weights = state.targetTypeWeights;
-  weights = weights || { rarity: 1, accuracy: 1, speed: 1 };
+  weights = weights || { rarity: 1, accuracy: 1, speed: 1, threshold: 1 };
 
   for(var i = 0; i < letters.length; i++) {
     var l = letters[i];
@@ -38,17 +48,20 @@ var generateTargets = function(letters) {
       rarity: 1 / (1 + Math.sqrt(state.counts[l] || 0)),
       accuracy: (1 - (state.accuracy[l] || 0)*(state.accuracy[l] || 0)),
       speed: 1 / (1 + Math.sqrt(state.speed[l] || 0)),
+      threshold: letterOverThreshold(l) ? 0 : 1,
     }
     for(var w in targets[i])
       totalTargets[w] = (totalTargets[w] || 0) + targets[i][w];
   }
+
+  console.log(targets[1].threshold);
 
   mixedTargets = [];
   for(var i = 0; i < letters.length; i++) {
     mixedTargets[i] = 0;
     for(w in targets[i])
       if(totalTargets[w])
-        mixedTargets[i] += weights[w] * targets[i][w] / totalTargets[w];
+        mixedTargets[i] += weights[w] * targets[i][w] / (totalTargets[w] || 1);
   }
 
   return mixedTargets;
@@ -191,15 +204,10 @@ var collectStats = function() {
 }
 
 var checkAddNewLetter = function() {
-  for(var i = 0; i < state.letters.length; i++) {
-    var letter = state.letters[i];
-    if(state.accuracy[letter] < state.unlock.accuracy)
+  for(var i = 0; i < state.letters.length; i++)
+    if(!letterOverThreshold(state.letters[i]))
       return false;
-    if(state.speed[letter] < state.unlock.speed)
-      return false;
-    if(state.counts[letter] < state.unlock.count)
-      return false;
-  }
+
   var letters = Object.keys(stats[1].freqs);
   letters = letters.sort(function(a,b) { return stats[1].freqs[a] < stats[1].freqs[b]})
   for(var i = 0; i < letters.length; i++)
