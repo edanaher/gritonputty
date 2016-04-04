@@ -3,6 +3,7 @@
 <title>Grit on Putty: a Typing Tutor</title>
 <script type="text/javascript" src="ngrams/stats.js"></script>
 <script type="text/javascript" src="state.js"></script>
+<script type="text/javascript" src="keyboard.js"></script>
 <script type="text/javascript" src="grit.js"></script>
 <link rel="stylesheet" type="text/css" href="grit.css" />
 </head>
@@ -30,5 +31,6 @@ Weights for targeting generated letters:
 <li><label>Below threshold: <input type="text" id="targetTypeWeights-threshold" data-state-type="float" value="1" /></label></li>
 <li><label>Pivot Exponent: <input type="text" id="targetTypeWeights-pivotExponent" data-state-type="float" value="2" /></label></li>
 </ul>
+Translate layout from <input type="text" id="layout-physical" data-state-type="string" value="qwerty" /> to <input type="text" id="layout-logical" data-state-type="string" value="qwerty" /> (qwerty or workman)
 </body>
 </html>

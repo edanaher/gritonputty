@@ -25,7 +25,7 @@ state = {
         obj[key] = parseFloat(elem.value);
         break;
       default:
-        obj[path] = elem.value;
+        obj[key] = elem.value;
     }
     localStorage[head] = JSON.stringify(state[head]);
   },
