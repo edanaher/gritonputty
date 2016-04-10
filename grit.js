@@ -272,6 +272,7 @@ var checkLetter = function(event) {
 
   if(keyCorrect && !chordWrong) { // A good keystroke, whether in a chord or not
     active.classList.remove("active");
+    active.classList.add("correct");
     var next = active.nextSibling;
     if(next)
       next.classList.add("active");
@@ -281,15 +282,19 @@ var checkLetter = function(event) {
     var chordLen = chord ? lastHistory[1].length + 1 : 1;
     active.classList.remove("active");
     active.classList.add("error");
-    for(var i = 1; i < chordLen; i++) {
-      active = active.previousSibling;
-      active.classList.add("error");
-    }
+    if(state.waitOnTypo)
+      for(var i = 1; i < chordLen; i++) {
+        active = active.previousSibling;
+        active.classList.add("error");
+      }
+    else
+        active = active.nextSibling;
     active.classList.add("active");
   } else { // a continuation of a wrong chord
-    if(chord)
-      for(var i = 0; i < lastHistory[1].length; i++)
-        bad = bad.nextSibling;
+    if(state.waitOnTypo)
+      if(chord)
+        for(var i = 0; i < lastHistory[1].length; i++)
+          bad = bad.nextSibling;
     bad.classList.add("error");
   }
 

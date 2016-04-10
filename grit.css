@@ -7,8 +7,12 @@
   color: red;
 }
 
-#words .error {
+#words .correct.error {
   color: #AA0000;
+}
+
+#words .error {
+  color: #FF3333;
 }
 
 #words.finished {
