@@ -42,11 +42,11 @@ state = {
     if(obj[key] === null || obj[key] === undefined)
       obj[key] = state.parseValue(def, type);
 
-    if(obj[key] && elem.tagName == "INPUT")
+    if(obj[key] && (elem.tagName == "INPUT" || elem.tagName == "SELECT"))
       elem.value = obj[key];
     else if(obj[key] !== null && obj[key] !== undefined)
       elem.innerHTML = state.displayValue(obj[key], type);
-    else if(elem.tagName == "INPUT")
+    else if(elem.tagName == "INPUT" || elem.tagName == "SELECT")
       obj[key] = state.parseValue(elem.value, type);
   },
 
