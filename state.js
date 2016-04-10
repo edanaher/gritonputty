@@ -24,6 +24,10 @@ state = {
       case "float":
         obj[key] = parseFloat(elem.value);
         break;
+      case "bool":
+        console.log("Got", obj, key, elem.checked);
+        obj[key] = elem.checked;
+        break;
       default:
         obj[key] = elem.value;
     }
@@ -42,6 +46,13 @@ state = {
     if(obj[key] === null || obj[key] === undefined)
       obj[key] = state.parseValue(def, type);
 
+    if(elem.tagName == "INPUT" && elem.getAttribute("type") == "checkbox") {
+      if(obj[key])
+        elem.checked = obj[key];
+      else
+        obj[key] = elem.checked;
+      return;
+    }
     if(obj[key] && (elem.tagName == "INPUT" || elem.tagName == "SELECT"))
       elem.value = obj[key];
     else if(obj[key] !== null && obj[key] !== undefined)
