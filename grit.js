@@ -238,7 +238,8 @@ var checkAddNewLetter = function() {
 
 var checkLetter = function(event) {
   if(document.querySelector(":focus")) return;
-  event.preventDefault();
+  if(!event.ctrlKey && !event.altKey)
+    event.preventDefault();
   var active = document.querySelector("#words .active");
   if(!active && event.keyCode != 13)
     return;
