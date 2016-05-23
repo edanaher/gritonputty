@@ -2,11 +2,24 @@ punctuation = {
   symbols: {
     ".": { },
     ",": { },
+    "!": { },
+    "?": { },
+    ";": { },
+    ":": { },
     "'": { "pos": "apostrophe" },
     '"': { "pos": "boundary" },
     "_": { "pos": "infix" },
+    "-": { "pos": "infix" },
+    "(": { "pos": "left" },
+    ")": { "pos": "right" },
+    "<": { "pos": "left" },
+    ">": { "pos": "right" },
+    "/": { "pos": "infix" },
+    "\\": { "pos": "infix" },
    },
   add: function(word, sym) {
+    if(!sym)
+      return word;
     switch(punctuation.symbols[sym].pos) {
       case "apostrophe":
         var r = Math.random();
@@ -27,6 +40,8 @@ punctuation = {
           return sym + word;
         else
           return word + sym;
+      case "left":
+        return sym + word;
       default:
         return word + sym;
     }

@@ -289,7 +289,8 @@ var checkLetter = function(event) {
   keyPressed = keyTranslationTable[keyPressed] || keyPressed;
   var lastHistory = curHistory[curHistory.length - 1];
   var chord = lastHistory && event.timeStamp - lastHistory[0] < state.chordThreshold;
-  var keyCorrect = keyPressed == active.innerHTML[0];
+  var expectedValue = active.childNodes[0].nodeValue;
+  var keyCorrect = keyPressed == expectedValue;
   var chordWrong = chord && lastHistory[1] != lastHistory[2];
   if(chord)
     console.log("chord:", lastHistory[2] + keyPressed, " in ",
@@ -329,7 +330,7 @@ var checkLetter = function(event) {
     lastHistory[1] += bad.innerHTML;
     lastHistory[2] += keyPressed;
   } else {
-    curHistory.push([event.timeStamp, active.innerHTML, keyPressed]);
+    curHistory.push([event.timeStamp, expectedValue, keyPressed]);
     lastHistory = curHistory[curHistory.length - 1];
   }
 
