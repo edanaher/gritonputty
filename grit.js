@@ -145,6 +145,23 @@ var generateWord = function(wordLen) {
   else if(Math.random() < state.capital.chance)
     word = word.charAt(0).toUpperCase() + word.slice(1);
 
+
+  var punctuations = state.punctuations;
+  var punctTargets = generateTargets(punctuations);
+  var totalPunctuationTargets = 0;
+
+  for(var i = 0; i < punctuations.length; i++)
+    totalPunctuationTargets += punctTargets[i];
+  for(var i = 0; i < letters.length; i++)
+    state.targets[punctuations[i]] = punctTargets[i] / totalPunctuationTargets;
+  state.setArray("targets", "0");
+
+  // TODO: Automatically pick probability for having punctuation at all
+  if(Math.random() < state.punctuationChance) {
+    var punct = pickOne(punctuations, punctTargets);
+    word = punctuation.add(word, punct);
+  }
+
   return word;
 }
 
@@ -393,8 +410,8 @@ var generatePage = function() {
   }
 
   var punctuationDiv = document.getElementById("punctuation");
-  for(var p in punctuation) {
-    var info = punctuation[p];
+  for(var p in punctuation.symbols) {
+    var info = punctuation.symbols[p];
     punctuationDiv.appendChild(createSymbolDiv(p, "punctuation"));
   }
 
