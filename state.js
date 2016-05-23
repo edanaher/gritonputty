@@ -1,5 +1,6 @@
 state = {
   letters: "sieontrah",
+  punctuations: "",
 
   getPath(path) {
     path = path.split("-");
@@ -25,7 +26,6 @@ state = {
         obj[key] = parseFloat(elem.value);
         break;
       case "bool":
-        console.log("Got", obj, key, elem.checked);
         obj[key] = elem.checked;
         break;
       default:
@@ -80,7 +80,7 @@ state = {
   },
 
   setArray: function(path, def) {
-    state[path] = state[path] || {}
+    state[path] = state[path] || "";
     var elems = document.querySelectorAll("[data-state-path^=" + path + "]");
     for(i = 0; i < elems.length; i++)
       state.setElem(elems[i], def);
@@ -190,6 +190,7 @@ state = {
     }
 
     state.letters = "sieontrah";
+    state.punctuations = "";
     state.setup();
   }
 }

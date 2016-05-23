@@ -36,7 +36,7 @@ var colorThresholds = function() {
   for(t in thresholds) {
     var threshold = thresholds[t];
     for(l in state[threshold]) {
-      var elem = document.querySelector("[data-state-path=" + threshold + "-" + l);
+      var elem = document.querySelector("[data-state-path='" + threshold + "-" + l+"'");
       if(!elem) continue;
       if(!state.counts[l]) continue;
       if(state[threshold][l] < state.unlock[threshold])
@@ -356,6 +356,25 @@ var createDataType = function(clas, type, path, def) {
   return div;
 }
 
+var createSymbolDiv = function(sym, type) {
+  var container = document.createElement("div");
+
+  var div = document.createElement("div");
+  div.classList.add("symbol-enable");
+  div.setAttribute("data-state-type", "char-array");
+  div.setAttribute("data-state-path", type + "s");
+  div.setAttribute("data-state-char", sym);
+  div.innerHTML = sym;
+  container.appendChild(div);
+
+  container.appendChild(createDataType(type + "-accuracy", "percentage", "accuracy-" + sym, "0"));
+  container.appendChild(createDataType(type + "-speed", "int", "speed-" + sym, "0"));
+  container.appendChild(createDataType(type + "-counts", "log", "counts-" + sym, "0"));
+  container.appendChild(createDataType(type + "-targets", "percentage", "targets-" + sym, "0"));
+
+  return container;
+}
+
 var generatePage = function() {
   var inputs = document.querySelectorAll("input[data-state-type]");
   for(var i = 0; i < inputs.length; i++)
@@ -370,24 +389,14 @@ var generatePage = function() {
   for(var i = 0; i < letters.length; i++) {
     var letter = letters[i];
 
-    var container = document.createElement("div");
-
-    var div = document.createElement("div");
-    div.classList.add("letter-enable");
-    div.setAttribute("data-state-type", "char-array");
-    div.setAttribute("data-state-path", "letters");
-    div.setAttribute("data-state-char", letter);
-    div.innerHTML = letter;
-    container.appendChild(div);
-
-    container.appendChild(createDataType("letter-accuracy", "percentage", "accuracy-" + letter, "0"));
-    container.appendChild(createDataType("letter-speed", "int", "speed-" + letter, "0"));
-    container.appendChild(createDataType("letter-counts", "log", "counts-" + letter, "0"));
-    container.appendChild(createDataType("letter-targets", "percentage", "targets-" + letter, "0"));
-
-    lettersDiv.appendChild(container);
+    lettersDiv.appendChild(createSymbolDiv(letter, "letter"));
   }
 
+  var punctuationDiv = document.getElementById("punctuation");
+  for(var p in punctuation) {
+    var info = punctuation[p];
+    punctuationDiv.appendChild(createSymbolDiv(p, "punctuation"));
+  }
 
   document.addEventListener("keypress", checkLetter);
 }

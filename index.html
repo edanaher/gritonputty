@@ -3,6 +3,7 @@
 <title>Grit on Putty: a Typing Tutor</title>
 <script type="text/javascript" src="ngrams/stats.js"></script>
 <script type="text/javascript" src="state.js"></script>
+<script type="text/javascript" src="punctuation.js"></script>
 <script type="text/javascript" src="keyboard.js"></script>
 <script type="text/javascript" src="grit.js"></script>
 <link rel="stylesheet" type="text/css" href="grit.css" />
@@ -11,7 +12,8 @@
 <div class="button-wrapper"><span id="start" class="button">Start</span><span id="wrong-letter"></span></div>
 
 <div id="words"></div>
-<div id="letters"></div>
+<div id="letters" class="symbols"></div>
+<div id="punctuation" class="symbols"></div>
 <label>Sentence length: <input type="text" id="sentenceLength" data-state-type="int" value="100" /></label>
 <div class="button-wrapper"><span id="reset" class="button">Reset</span></div>
 Unlock new letter with:

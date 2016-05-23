@@ -19,13 +19,13 @@
   color: #006600;
 }
 
-#letters > div {
+.symbols > div {
   display: inline-block;
   text-align: center;
   vertical-align: center;
 }
 
-#letters .letter-enable {
+.symbols .symbol-enable {
   width: 1.8em;
   height: 1.8em;
   margin: 2px;
@@ -35,15 +35,15 @@
   vertical-align: center;
 }
 
-#letters .low-stat {
+.symbols .low-stat {
   color: red;
 }
 
-#letters .letter-accuracy {
+.symbols .letter-accuracy {
   margin: 2px;
 }
 
-#letters div.active {
+.symbols div.active {
   background-color: #AAAAFF;
 }
 
