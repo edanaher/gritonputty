@@ -10,6 +10,9 @@ var pickOne = function(letters, weights, e) {
   for(var i = 0; i < letters.length; i++)
     totalWeight += Math.pow(weights[i], e);
 
+  if(totalWeight < 1e-9)
+    return letters[Math.floor(Math.random() * letters.length)];
+
   var r = Math.random() * totalWeight;
   var w = 0;
   for(var i = 0; i < letters.length; i++) {
