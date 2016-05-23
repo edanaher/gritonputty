@@ -139,6 +139,12 @@ var generateWord = function(wordLen) {
   if(word.length < wordLen)
     console.log("word is too short: ", word);
 
+  var caps = Math.random()
+  if(Math.random() < state.capital.chance * state.capital.chance)
+    word = word.toUpperCase();
+  else if(Math.random() < state.capital.chance)
+    word = word.charAt(0).toUpperCase() + word.slice(1);
+
   return word;
 }
 
@@ -152,6 +158,8 @@ var generateSentence = function(length) {
   }
   if(sentence.length < length)
     console.log("sentence is too short: ", sentence);
+  if(state.capital.first)
+    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
   return sentence;
 }
 
