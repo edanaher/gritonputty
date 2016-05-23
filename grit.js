@@ -172,7 +172,7 @@ var collectStats = function() {
     var entry = curHistory[i];
     if(entry[1] == entry[2]) { // correct press
       for(var c = 0; c < entry[1].length; c++) {
-        var ch = entry[1][c];
+        var ch = entry[1][c].toLowerCase();
         correct[ch] = correct[ch] || 0;
         correct[ch]++;
         if(i > 0) { // No speed for the first character
@@ -186,7 +186,7 @@ var collectStats = function() {
       lastTime = entry[0];
     } else { // incorrect press
       for(var c = 0; c < entry[1].length; c++) {
-        var ch = entry[1][c];
+        var ch = entry[1][c].toLowerCase();
         incorrect[ch] = incorrect[ch] || 0;
         incorrect[ch]++;
       }
@@ -197,6 +197,7 @@ var collectStats = function() {
   state.speed = state.speed || {}
   state.counts = state.counts || {}
   for(c in correct) {
+    c = c.toLowerCase();
     state.counts[c] = state.counts[c] || 0;
 
     var newWeight = state.weight.sentence + (1-Math.pow(1-state.weight.letter, correct[c]));
