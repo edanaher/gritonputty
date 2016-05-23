@@ -36,7 +36,8 @@ var colorThresholds = function() {
   for(t in thresholds) {
     var threshold = thresholds[t];
     for(l in state[threshold]) {
-      var elem = document.querySelector("[data-state-path='" + threshold + "-" + l+"'");
+      quote = l == '"' ? "'" : '"';
+      var elem = document.querySelector("[data-state-path=" + quote + threshold + "-" + l + quote);
       if(!elem) continue;
       if(!state.counts[l]) continue;
       if(state[threshold][l] < state.unlock[threshold])
