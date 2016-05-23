@@ -252,16 +252,29 @@ var checkAddNewLetter = function() {
   for(var i = 0; i < state.letters.length; i++)
     if(!letterOverThreshold(state.letters[i]))
       return false;
+  for(var i = 0; i < state.punctuations.length; i++)
+    if(!letterOverThreshold(state.punctuations[i]))
+      return false;
 
   var letters = Object.keys(stats[1].freqs);
-  letters = letters.sort(function(a,b) { return stats[1].freqs[a] < stats[1].freqs[b]})
-  for(var i = 0; i < letters.length; i++)
-    if(state.letters.indexOf(letters[i]) == -1) {
-      // TODO: this is hacky.
-      state.updateString({ target:
-        document.querySelector("[data-state-path=letters][data-state-char=" + letters[i] + "]")});
-      break;
-    }
+
+  if(state.letters.length < letters.length &&
+     state.letters.length < 5 * state.punctuations.length) {
+    // Unlock a letter
+    letters = letters.sort(function(a,b) { return stats[1].freqs[a] < stats[1].freqs[b]})
+    for(var i = 0; i < letters.length; i++)
+      if(state.letters.indexOf(letters[i]) == -1) {
+        // TODO: this is hacky.
+        state.updateString({ target:
+          document.querySelector("[data-state-path=letters][data-state-char=" + letters[i] + "]")});
+        break;
+      }
+  } else {
+    // TODO: is this hacky?
+    var nextPunct = document.querySelector("#punctuation .symbol-enable:not(.active)");
+    if(nextPunct)
+      state.updateString({ target: nextPunct });
+  }
 
   return true;
 }
