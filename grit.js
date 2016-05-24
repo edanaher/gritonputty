@@ -452,8 +452,7 @@ var calibrateChord =  {
       var span = document.getElementById("calibrate-chord-time");
       span.innerHTML = calibrateChord.letters.join("") + ": " + timings.join(", ");
       if(dt > state.chordThreshold) {
-        state.chordThreshold = Math.floor(dt * 1.1);
-        state.setElem(document.getElementById("chordThreshold"));
+        state.update("chordThreshold", Math.floor(dt * 1.1));
       }
     } else {
       timings = [];
