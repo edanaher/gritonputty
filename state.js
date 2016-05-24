@@ -4,6 +4,11 @@ state = {
 
   getPath(path) {
     path = path.split("-");
+    // Handle a final - in a hacky way
+    if(path[path.length - 1] == "" && path[path.length - 2] == "") {
+      path.splice(path.length - 2, 2, "-");
+      console.log("Spliced ", path);
+    }
     var obj = state;
     for(var i = 0; i < path.length - 1; i++) {
       obj[path[i]] = obj[path[i]] || {};
