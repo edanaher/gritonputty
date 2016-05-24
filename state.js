@@ -76,7 +76,7 @@ state = {
       elem.classList.add("active");
       state[path] += letter;
     }
-    localStorage[path] = state[path];
+    localStorage[path] = JSON.stringify(state[path]);
   },
 
   setArray: function(path, def) {
