@@ -436,14 +436,61 @@ var generatePage = function() {
   document.addEventListener("keypress", checkLetter);
 }
 
+var calibrateChord =  {
+  lastTime: 0,
+  letters: [],
+  timings: [],
+  keypress: function(event) {
+    if(document.querySelector(":focus")) return;
+    if(!event.ctrlKey && !event.altKey)
+      event.preventDefault();
+    var dt = event.timeStamp - calibrateChord.lastTime;
+    var keyPressed = String.fromCharCode(event.charCode);
+    if(dt < 100) {
+      timings.push(dt);
+      calibrateChord.letters.push(keyPressed);
+      var span = document.getElementById("calibrate-chord-time");
+      span.innerHTML = calibrateChord.letters.join("") + ": " + timings.join(", ");
+      if(dt > state.chordThreshold) {
+        state.chordThreshold = dt;
+        state.setElem(document.getElementById("chordThreshold"));
+      }
+    } else {
+      timings = [];
+      calibrateChord.letters = [keyPressed];
+    }
+    calibrateChord.lastTime = event.timeStamp;
+  },
+
+  start: function(event) {
+    var calibrateButton = event.target;
+    document.removeEventListener("keypress", checkLetter);
+    document.addEventListener("keypress", calibrateChord.keypress);
+    calibrateButton.removeEventListener("click", calibrateChord.start);
+    calibrateButton.addEventListener("click", calibrateChord.stop);
+    calibrateButton.innerHTML = "Stop";
+  },
+
+  stop: function(event) {
+    var calibrateButton = event.target;
+    document.removeEventListener("keypress", calibrateChord.keypress);
+    document.addEventListener("keypress", checkLetter);
+    calibrateButton.removeEventListener("click", calibrateChord.stop);
+    calibrateButton.addEventListener("click", calibrateChord.start);
+    calibrateButton.innerHTML = "Calibrate";
+  },
+}
+
+
 var reset = function() {
   state.reset();
   makeSentence();
 }
 
 var init = function() {
-  startButton = document.querySelector("#start");
-  if(!startButton) {
+  var startButton = document.querySelector("#start");
+  var calibrateButton = document.querySelector("#calibrate-chord");
+  if(!startButton || !calibrateButton) {
     setTimeout(init, 100);
     return;
   }
@@ -455,6 +502,7 @@ var init = function() {
   makeSentence();
   keyboard.init();
   startButton.addEventListener("click", makeSentence);
+  calibrateButton.addEventListener("click", calibrateChord.start);
   document.getElementById("reset").addEventListener("click", reset);
 };
 
