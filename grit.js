@@ -190,14 +190,12 @@ var generateWord = function(wordLen) {
   state.setArray("targets", "0");
 
   // TODO: Automatically pick probability for having punctuation at all
-  var punctProb = 1-Math.pow(1-classWeights.punctuations, wordLen);
-  var basePunctProb = punctProb;
-  console.log(punctProb);
-  while(Math.random() < punctProb) {
-    var punct = pickOne(punctuations, punctTargets);
-    word = punctuation.add(word, punct);
-    punctProb *= basePunctProb;
-  }
+  var punctProb = classWeights.punctuations * state.punctuationMultiplier;
+  for(var i = 0; i < wordLen; i++)
+    if(Math.random() < punctProb) {
+      var punct = pickOne(punctuations, punctTargets);
+      word = punctuation.add(word, punct);
+    }
 
   return word;
 }
