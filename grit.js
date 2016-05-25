@@ -107,18 +107,47 @@ var generateWeights = function(letters, targets, prefix, suffix, start) {
   return weights;
 };
 
+var weighClasses = function() {
+  var classes = {
+    letters: state.letters,
+    punctuations: state.punctuations,
+  }
+
+  var symbols = [];
+  for(var c in classes)
+    symbols += classes[c];
+
+  targets = generateTargets(symbols);
+
+  var weights = {};
+  var totalWeight = 0;
+  var l = 0;
+  for(var c in classes) {
+    weights[c] = 0;
+    for(i = 0; i < classes[c].length; i++)
+      weights[c] += targets[l++];
+    totalWeight += weights[c];
+  }
+
+  for(var c in weights)
+    weights[c] /= totalWeight;
+
+  return weights;
+}
+
 var generateWord = function(wordLen) {
   var letters = state.letters;
   var weights = [];
 
   var targets = generateTargets(letters);
+  var classWeights = weighClasses();
 
   var totalTargets = 0;
   state.targets = {};
   for(var i = 0; i < letters.length; i++)
     totalTargets += targets[i];
   for(var i = 0; i < letters.length; i++)
-    state.targets[letters[i]] = targets[i] / totalTargets;
+    state.targets[letters[i]] = classWeights.letters * targets[i] / totalTargets;
   state.setArray("targets", "0");
 
   var word = pickOne(letters, targets, state.targetTypeWeights.pivotExponent);
@@ -156,12 +185,12 @@ var generateWord = function(wordLen) {
 
   for(var i = 0; i < punctuations.length; i++)
     totalPunctuationTargets += punctTargets[i];
-  for(var i = 0; i < letters.length; i++)
-    state.targets[punctuations[i]] = punctTargets[i] / totalPunctuationTargets;
+  for(var i = 0; i < punctuations.length; i++)
+    state.targets[punctuations[i]] = classWeights.punctuations * punctTargets[i] / totalPunctuationTargets;
   state.setArray("targets", "0");
 
   // TODO: Automatically pick probability for having punctuation at all
-  if(Math.random() < state.punctuationChance) {
+  if(Math.random() < classWeights.punctuations * wordLen) {
     var punct = pickOne(punctuations, punctTargets);
     word = punctuation.add(word, punct);
   }
