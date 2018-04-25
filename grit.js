@@ -464,6 +464,19 @@ var generatePage = function() {
     punctuationDiv.appendChild(createSymbolDiv(p, "punctuation"));
   }
 
+  var twiddlerContainer = document.getElementById("twiddler-display");
+  for(var r = 0; r < 4; r++) {
+    var row = document.createElement("div");
+    row.classList.add("twiddler-row");
+    for(var c = 0; c < 3; c++) {
+      var cell = document.createElement("div");
+      cell.classList.add("twiddler-cell");
+      cell.id = "twiddler-display-" + r + "-" + c;
+      row.appendChild(cell);
+    }
+    twiddlerContainer.appendChild(row);
+  }
+
   document.addEventListener("keypress", checkLetter);
 }
 

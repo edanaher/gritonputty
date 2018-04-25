@@ -27,10 +27,28 @@ keyboard = {
       keyTranslationTable = table;
   },
 
+  rotateTwiddler: function() {
+    var rotated = document.getElementById("rotate-twiddler").checked;
+    var mirrored = document.getElementById("mirror-twiddler").checked;
+    var twiddlerDisplay = document.getElementById("twiddler-display");
+    if(rotated)
+      twiddlerDisplay.classList.add("rotated");
+    else
+      twiddlerDisplay.classList.remove("rotated");
+    if(mirrored)
+      twiddlerDisplay.classList.add("mirrored");
+    else
+      twiddlerDisplay.classList.remove("mirrored");
+  },
+
   init: function() {
     document.getElementById("layout-physical").addEventListener("change", keyboard.updateTable);
     document.getElementById("layout-logical").addEventListener("change", keyboard.updateTable);
+    document.getElementById("rotate-twiddler").addEventListener("change", keyboard.rotateTwiddler);
+    document.getElementById("mirror-twiddler").addEventListener("change", keyboard.rotateTwiddler);
     keyTranslationTable = {};
     keyboard.updateTable();
+    keyboard.rotateTwiddler();
+    document.getElementById("twiddler-display-1-0").classList.add("active");
   }
 }
