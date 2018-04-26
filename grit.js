@@ -323,13 +323,12 @@ var checkLetter = function(event) {
       active.classList.remove("active");
       prev.classList.add("active");
     }
-    drawTwiddler();
+    drawTwiddlerSoon();
     return;
   }
   if(event.keyCode == 13) { // return
     if(active == null)
       makeSentence();
-    drawTwiddler();
     return;
   }
   var wrongLetter = document.getElementById("wrong-letter");
@@ -355,6 +354,7 @@ var checkLetter = function(event) {
       next.classList.add("active");
     else
       finished = true;
+    drawTwiddlerSoon();
   } else if(!keyCorrect && !chordWrong) { // The first wrong keystroke of a chord
     var chordLen = chord ? lastHistory[1].length + 1 : 1;
     active.classList.remove("active");
@@ -367,12 +367,14 @@ var checkLetter = function(event) {
     else
         active = active.nextSibling;
     active.classList.add("active");
+    drawTwiddler();
   } else { // a continuation of a wrong chord
     if(state.waitOnTypo)
       if(chord)
         for(var i = 0; i < lastHistory[1].length; i++)
           bad = bad.nextSibling;
     bad.classList.add("error");
+    drawTwiddler();
   }
 
   if(chord) {
@@ -392,9 +394,9 @@ var checkLetter = function(event) {
     document.querySelector("#words").classList.add("finished");
     collectStats();
     checkAddNewLetter();
+    drawTwiddler();
   }
 
-  drawTwiddler();
   return true;
 }
 
@@ -413,7 +415,7 @@ var makeSentence = function(event) {
   }
   spans[0].classList.add("active");
   curHistory = [];
-  drawTwiddler();
+  drawTwiddlerSoon();
 };
 
 var createDataType = function(clas, type, path, def) {
@@ -454,12 +456,15 @@ var loadTwiddlerConfig = function() {
     var binConfig = e.target.result;
     state.update("twiddlerBinConfig", binConfig);
     state.twiddlerLayout = new TwiddlerConfigV5(binConfig);
-    drawTwiddler();
+    drawTwiddlerSoon();
   }
   var binConfig = reader.readAsBinaryString(input.files[0])
 }
 
+var drawTwiddlerTimer = null;
 var drawTwiddler = function() {
+  if(drawTwiddlerTimer)
+    clearTimeout(drawTwiddlerTimer)
   if(!state.twiddlerLayout)
     return;
   var active = document.querySelector("#words .active");
@@ -484,6 +489,16 @@ var drawTwiddler = function() {
       else
         twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
   chord.chord[0][3] = oldShift;
+}
+
+var drawTwiddlerSoon = function() {
+  var twiddlerDisplay = document.getElementById("twiddler-display");
+  for(var r = 0; r < 5; r++)
+    for(var c = 0; c < 3 + (r==0); c++)
+      twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
+  if(drawTwiddlerTimer)
+    clearTimeout(drawTwiddlerTimer)
+  drawTwiddlerTimer = setTimeout(drawTwiddler, state.showTwiddlerDelay * 1000);
 }
 
 var generatePage = function() {
@@ -598,7 +613,6 @@ var init = function() {
   state.setup();
   makeSentence();
   keyboard.init();
-  drawTwiddler();
   startButton.addEventListener("click", makeSentence);
   calibrateButton.addEventListener("click", calibrateChord.start);
   document.getElementById("reset").addEventListener("click", reset);
