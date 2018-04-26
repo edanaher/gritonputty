@@ -474,24 +474,19 @@ var drawTwiddler = function() {
   var letter = active && active.childNodes[0].nodeValue
   var chord = letter && state.twiddlerLayout.toChord[letter];
   var twiddlerDisplay = document.getElementById("twiddler-display");
-  // Ew... but this is currently necessary for capital letters.  Hopefully
-  // upstream ConfigV5 will figure this out.
   if(!chord) {
     for(var r = 0; r < 5; r++)
       for(var c = 0; c < 3 + (r==0); c++)
         twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
     return;
   }
-  var oldShift = chord.chord[0][3];
-  if(letter != chord.text[0])
-    chord.chord[0][3] = true;
+
   for(var r = 0; r < 5; r++)
     for(var c = 0; c < 3 + (r==0); c++)
       if(chord.chord[r][c])
         twiddlerDisplay.childNodes[r].childNodes[c].classList.add("active");
       else
         twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
-  chord.chord[0][3] = oldShift;
 }
 
 var drawTwiddlerSoon = function() {
