@@ -55,6 +55,8 @@ keyboard = {
     keyTranslationTable = {};
     keyboard.updateTable();
     keyboard.rotateTwiddler();
-    document.getElementById("twiddler-display-1-0").classList.add("active");
+    if(state.twiddlerBinConfig)
+      state.twiddlerLayout = new TwiddlerConfigV5(state.twiddlerBinConfig);
+    drawTwiddler();
   }
 }

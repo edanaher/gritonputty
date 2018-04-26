@@ -323,11 +323,13 @@ var checkLetter = function(event) {
       active.classList.remove("active");
       prev.classList.add("active");
     }
+    drawTwiddler();
     return;
   }
   if(event.keyCode == 13) { // return
     if(active == null)
       makeSentence();
+    drawTwiddler();
     return;
   }
   var wrongLetter = document.getElementById("wrong-letter");
@@ -392,6 +394,7 @@ var checkLetter = function(event) {
     checkAddNewLetter();
   }
 
+  drawTwiddler();
   return true;
 }
 
@@ -410,6 +413,7 @@ var makeSentence = function(event) {
   }
   spans[0].classList.add("active");
   curHistory = [];
+  drawTwiddler();
 };
 
 var createDataType = function(clas, type, path, def) {
@@ -439,6 +443,47 @@ var createSymbolDiv = function(sym, type) {
   container.appendChild(createDataType(type + "-targets", "percentage", "targets-" + sym, "0"));
 
   return container;
+}
+
+var loadTwiddlerConfig = function() {
+  var input = document.getElementById("twiddler-config-file");
+  if(!input.files[0])
+    return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var binConfig = e.target.result;
+    state.update("twiddlerBinConfig", binConfig);
+    state.twiddlerLayout = new TwiddlerConfigV5(binConfig);
+    drawTwiddler();
+  }
+  var binConfig = reader.readAsBinaryString(input.files[0])
+}
+
+var drawTwiddler = function() {
+  if(!state.twiddlerLayout)
+    return;
+  var active = document.querySelector("#words .active");
+  var letter = active && active.childNodes[0].nodeValue
+  var chord = letter && state.twiddlerLayout.toChord[letter];
+  var twiddlerDisplay = document.getElementById("twiddler-display");
+  // Ew... but this is currently necessary for capital letters.  Hopefully
+  // upstream ConfigV5 will figure this out.
+  if(!chord) {
+    for(var r = 0; r < 5; r++)
+      for(var c = 0; c < 3 + (r==0); c++)
+        twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
+    return;
+  }
+  var oldShift = chord.chord[0][3];
+  if(letter != chord.text[0])
+    chord.chord[0][3] = true;
+  for(var r = 0; r < 5; r++)
+    for(var c = 0; c < 3 + (r==0); c++)
+      if(chord.chord[r][c])
+        twiddlerDisplay.childNodes[r].childNodes[c].classList.add("active");
+      else
+        twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
+  chord.chord[0][3] = oldShift;
 }
 
 var generatePage = function() {
@@ -485,6 +530,8 @@ var generatePage = function() {
   }
 
   document.addEventListener("keypress", checkLetter);
+  var loadbutton = document.getElementById("load-twiddler-config");
+  loadbutton.addEventListener("click", loadTwiddlerConfig);
 }
 
 var calibrateChord =  {
@@ -551,6 +598,7 @@ var init = function() {
   state.setup();
   makeSentence();
   keyboard.init();
+  drawTwiddler();
   startButton.addEventListener("click", makeSentence);
   calibrateButton.addEventListener("click", calibrateChord.start);
   document.getElementById("reset").addEventListener("click", reset);
