@@ -111,7 +111,6 @@ state = {
         return parseFloat(val);
         break;
       case "bool":
-        console.log("Default value: ", val);
         return val == "on";
       default:
         return val;

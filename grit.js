@@ -42,8 +42,7 @@ var colorThresholds = function() {
       quote = l == '"' ? "'" : '"';
       var elem = document.querySelector("[data-state-path=" + quote + threshold + "-" + l + quote);
       if(!elem) continue;
-      if(!state.counts[l]) continue;
-      if(state[threshold][l] < state.unlock[threshold])
+      if(state.counts[l] > 0 && state[threshold][l] < state.unlock[threshold])
         elem.classList.add("low-stat");
       else
         elem.classList.remove("low-stat");
@@ -256,6 +255,10 @@ var collectStats = function() {
     var letterFraction = correct[c] / (state.counts[c] + correct[c]);
     if(newWeight < letterFraction)
       newWeight = letterFraction;
+    if(newWeight < 0)
+      newWeight = 0;
+    if(newWeight > 1)
+      newWeight = 1;
     var oldWeight = 1 - newWeight;
 
     var accuracy = correct[c] / (correct[c] + (incorrect[c] || 0));
@@ -597,6 +600,7 @@ var calibrateChord =  {
 var reset = function() {
   state.reset();
   makeSentence();
+  colorThresholds();
 }
 
 var init = function() {
