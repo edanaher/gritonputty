@@ -27,18 +27,22 @@ keyboard = {
       keyTranslationTable = table;
   },
 
-  rotateTwiddler: function() {
-    var rotated = document.getElementById("rotate-twiddler").checked;
-    var mirrored = document.getElementById("mirror-twiddler").checked;
+  toggleTwiddlerClass: function(checkbox, clas, inverted) {
     var twiddlerDisplay = document.getElementById("twiddler-display");
-    if(rotated)
-      twiddlerDisplay.classList.add("rotated");
+    var val = document.getElementById(checkbox).checked;
+    if(inverted)
+      val = !val;
+    if(val)
+      twiddlerDisplay.classList.add(clas);
     else
-      twiddlerDisplay.classList.remove("rotated");
-    if(mirrored)
-      twiddlerDisplay.classList.add("mirrored");
-    else
-      twiddlerDisplay.classList.remove("mirrored");
+      twiddlerDisplay.classList.remove(clas);
+  },
+
+  rotateTwiddler: function() {
+    keyboard.toggleTwiddlerClass("show-twiddler", "hidden", true);
+    keyboard.toggleTwiddlerClass("rotate-twiddler", "rotated");
+    keyboard.toggleTwiddlerClass("mirror-twiddler", "mirrored");
+    keyboard.toggleTwiddlerClass("flip-twiddler", "flipped");
   },
 
   init: function() {
@@ -46,6 +50,8 @@ keyboard = {
     document.getElementById("layout-logical").addEventListener("change", keyboard.updateTable);
     document.getElementById("rotate-twiddler").addEventListener("change", keyboard.rotateTwiddler);
     document.getElementById("mirror-twiddler").addEventListener("change", keyboard.rotateTwiddler);
+    document.getElementById("flip-twiddler").addEventListener("change", keyboard.rotateTwiddler);
+    document.getElementById("show-twiddler").addEventListener("change", keyboard.rotateTwiddler);
     keyTranslationTable = {};
     keyboard.updateTable();
     keyboard.rotateTwiddler();

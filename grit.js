@@ -464,17 +464,24 @@ var generatePage = function() {
     punctuationDiv.appendChild(createSymbolDiv(p, "punctuation"));
   }
 
-  var twiddlerContainer = document.getElementById("twiddler-display");
+  var twiddlerDisplay = document.getElementById("twiddler-display");
+  var row = document.createElement("div");
+  row.classList.add("twiddler-row");
+  for(var c = 0; c < 4; c++) {
+    var cell = document.createElement("div");
+    cell.classList.add("twiddler-cell");
+    row.appendChild(cell);
+  }
+  twiddlerDisplay.appendChild(row);
   for(var r = 0; r < 4; r++) {
     var row = document.createElement("div");
     row.classList.add("twiddler-row");
     for(var c = 0; c < 3; c++) {
       var cell = document.createElement("div");
       cell.classList.add("twiddler-cell");
-      cell.id = "twiddler-display-" + r + "-" + c;
       row.appendChild(cell);
     }
-    twiddlerContainer.appendChild(row);
+    twiddlerDisplay.appendChild(row);
   }
 
   document.addEventListener("keypress", checkLetter);
