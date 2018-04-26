@@ -95,7 +95,8 @@ state = {
     var elem = document.getElementById(path);
     [head, obj, key] = state.getPath(path);
     obj[key] = val;
-    state.setElem(elem, val);
+    if(elem)
+      state.setElem(elem, val);
     localStorage[path] = JSON.stringify(state[path]);
   },
 
