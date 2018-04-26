@@ -30,8 +30,13 @@ In my tests, the twiddler always sent chords with 7 or 8 milliseconds between ch
 Future work
 -----------
 Lots of work remains:
-- Non-alpha keys: Right now it's only the 26 letters and space.  It would be good to add numbers, punctuation, special keys, etc.
-- Keyboard display: It would be good to display the keyboard/twiddler (after a configurable delay), particularly for new characters.
+- Keyboard display: It would be good to display a non-twiddler keyboard(after a configurable delay), particularly for new characters, and do the twiddler completely correctly.
 - Requiring chords: In a perfect world, multi-letter chords should be used on the twiddler wherever possible to speed up typing.  After letters are learned, start adding in chords that *must* be used, rejecting the individual characters as errors, even though they are technically correct.
 - Changing letter ordering: currently letters are added based on approximate frequency, but for learning a traditional layout, it would make sense to order them based on keyboard layout (home row first, etc.).
 - Pretty UI: Right now it's functional, but pretty ugly.  Once the features are fundamentally done, figure out a better layout.
+
+No-longer future work
+---------------------
+This stuff has been done:
+- Non-alpha keys: Punctuation works.  Though the twiddler display is iffy due to incomplete twiddler.cfg parsing.
+- Twiddler display: The twiddler can be displayed (after a configurable delay)
