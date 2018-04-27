@@ -496,7 +496,12 @@ var drawTwiddlerSoon = function() {
       twiddlerDisplay.childNodes[r].childNodes[c].classList.remove("active");
   if(drawTwiddlerTimer)
     clearTimeout(drawTwiddlerTimer)
-  drawTwiddlerTimer = setTimeout(drawTwiddler, state.showTwiddlerDelay * 1000);
+  var active = document.querySelector("#words .active");
+  var letter = active && active.childNodes[0].nodeValue
+  if(state.counts[letter] < state.showTwiddlerCount)
+    drawTwiddler();
+  else
+    drawTwiddlerTimer = setTimeout(drawTwiddler, state.showTwiddlerDelay * 1000);
 }
 
 var generatePage = function() {
