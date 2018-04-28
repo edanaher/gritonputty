@@ -79,6 +79,7 @@ state = {
     } else {
       elem.classList.add("active");
       state[path] += letter;
+      drawTwiddler(letter);
     }
     localStorage[path] = JSON.stringify(state[path]);
   },

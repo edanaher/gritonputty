@@ -396,8 +396,8 @@ var checkLetter = function(event) {
   if(finished) {
     document.querySelector("#words").classList.add("finished");
     collectStats();
-    checkAddNewLetter();
     drawTwiddler();
+    checkAddNewLetter();
   }
 
   return true;
@@ -465,15 +465,23 @@ var loadTwiddlerConfig = function() {
 }
 
 var drawTwiddlerTimer = null;
-var drawTwiddler = function() {
+var drawTwiddler = function(letter) {
+  var twiddlerDisplay = document.getElementById("twiddler-display");
+  if(letter)
+    twiddlerDisplay.classList.add("new-character");
+  else
+    twiddlerDisplay.classList.remove("new-character");
+
+
   if(drawTwiddlerTimer)
     clearTimeout(drawTwiddlerTimer)
   if(!state.twiddlerLayout)
     return;
-  var active = document.querySelector("#words .active");
-  var letter = active && active.childNodes[0].nodeValue
+  if(!letter) {
+    var active = document.querySelector("#words .active");
+    letter = active && active.childNodes[0].nodeValue
+  }
   var chord = letter && state.twiddlerLayout.toChord[letter];
-  var twiddlerDisplay = document.getElementById("twiddler-display");
   if(!chord) {
     for(var r = 0; r < 5; r++)
       for(var c = 0; c < 3 + (r==0); c++)

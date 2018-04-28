@@ -108,6 +108,9 @@
 .twiddler-cell.active {
   background-color: blue;
 }
+#twiddler-display.new-character .twiddler-cell.active {
+  background-color: purple;
+}
 
 #twiddler-display.rotated { flex-direction: row; }
 #twiddler-display.rotated .twiddler-row { flex-direction: column-reverse; }
