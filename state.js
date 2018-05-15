@@ -1,6 +1,7 @@
 state = {
   letters: "sieontrah",
   punctuations: "",
+  numbers: "",
 
   getPath(path) {
     path = path.split("-");
@@ -207,6 +208,7 @@ state = {
 
     state.letters = "sieontrah";
     state.punctuations = "";
+    state.numbers = "";
     state.setup();
   }
 }

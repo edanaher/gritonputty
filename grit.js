@@ -110,6 +110,7 @@ var weighClasses = function() {
   var classes = {
     letters: state.letters,
     punctuations: state.punctuations,
+    numbers: state.numbers
   }
 
   var symbols = [];
@@ -195,6 +196,40 @@ var generateWord = function(wordLen) {
       var punct = pickOne(punctuations, punctTargets);
       word = punctuation.add(word, punct);
     }
+
+  var numbers = state.numbers;
+  var numberTargets = generateTargets(numbers);
+  var totalNumberTargets = 0;
+
+  for(var i = 0; i < numbers.length; i++)
+    totalNumberTargets += numberTargets[i];
+  for(var i = 0; i < numbers.length; i++)
+    state.targets[numbers[i]] = classWeights.numbers * numberTargets[i] / totalNumberTargets;
+  state.setArray("targets", "0");
+
+  // TODO: Automatically pick probability for having punctuation at all
+  var numberProb = classWeights.numbers * state.numberMultiplier * wordLen;
+  if(numberProb > 0.4)
+    numberProb = 0.4;
+  var numberHere = "";
+  for(var i = 0; i < wordLen; i++) {
+    if(Math.random() > numberProb)
+      break;
+    var number = pickOne(numbers, numberTargets);
+    numberHere += number;
+  }
+
+  if(numberHere != "") {
+    var pivot = Math.floor(Math.random() * (word.length + 1));
+    word = word.slice(0, pivot) + numberHere + word.slice(pivot);
+  }
+
+  // Sometimes do an all-numbers "word"
+  if(Math.random() < numberProb * numberProb) {
+    word = "";
+    for(var i = 0; i < wordLen; i++)
+      word += pickOne(numbers, numberTargets);
+  }
 
   return word;
 }
@@ -289,6 +324,9 @@ var checkAddNewLetter = function() {
   for(var i = 0; i < state.punctuations.length; i++)
     if(!letterOverThreshold(state.punctuations[i]))
       return false;
+  for(var i = 0; i < state.numbers.length; i++)
+    if(!letterOverThreshold(state.numbers[i]))
+      return false;
 
   var letters = Object.keys(stats[1].freqs);
 
@@ -303,11 +341,16 @@ var checkAddNewLetter = function() {
           document.querySelector("[data-state-path=letters][data-state-char=" + letters[i] + "]")});
         break;
       }
-  } else {
+  } else if(state.punctuations.length <= state.numbers.length && state.numbers.length != 10) {
     // TODO: is this hacky?
     var nextPunct = document.querySelector("#punctuation .symbol-enable:not(.active)");
     if(nextPunct)
       state.updateString({ target: nextPunct });
+  } else {
+    // TODO: is this hacky?
+    var nextNum = document.querySelector("#numbers .symbol-enable:not(.active)");
+    if(nextNum)
+      state.updateString({ target: nextNum });
   }
 
   return true;
@@ -533,6 +576,11 @@ var generatePage = function() {
   for(var p in punctuation.symbols) {
     var info = punctuation.symbols[p];
     punctuationDiv.appendChild(createSymbolDiv(p, "punctuation"));
+  }
+
+  var numberDiv = document.getElementById("numbers");
+  for(var n = 0; n <= 9; n++) {
+    numberDiv.appendChild(createSymbolDiv(n.toString(), "number"));
   }
 
   var twiddlerDisplay = document.getElementById("twiddler-display");

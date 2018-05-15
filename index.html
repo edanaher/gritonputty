@@ -17,6 +17,7 @@
 <div id="twiddler-container"><div id="twiddler-display"></div></div>
 <div id="letters" class="symbols"></div>
 <div id="punctuation" class="symbols"></div>
+<div id="numbers" class="symbols"></div>
 
 <label><input type="checkbox" id="show-twiddler" data-state-type="bool" />Show twiddler display after <input type="text" id="showTwiddlerDelay" data-state-type="float" value="5.0" /> seconds and on characters with fewer than <input type="text" id="showTwiddlerCount" data-state-type="int" value="10" /> occurrences (or on errors)  (experimental, and may occasionally be wrong)</label><br />
 <label><input type="checkbox" id="rotate-twiddler" data-state-type="bool" data-state-default="off" />Rotate twiddler display</label><br />
@@ -36,6 +37,7 @@ Unlock new letter with:
 <label>Capitalization chance: <input type="text" id="capital-chance" data-state-type="float" value="0.1" /></label><br />
 <label><input type="checkbox" id="capital-first" data-state-type="bool" />Capitalize first letter</label><br />
 <label>Punctuation multiplier: <input type="text" id="punctuationMultiplier" data-state-type="float" value="0.5" /></label><br />
+<label>Number multiplier: <input type="text" id="numberMultiplier" data-state-type="float" value="0.5" /></label><br />
 <label>Chord threshold (ms): <input type="text" id="chordThreshold" data-state-type="float" value="10" /></label><button id="calibrate-chord">Calibrate</button><span id="calibrate-chord-time"></span><br />
 Weights for targeting generated letters:
 <ul>
