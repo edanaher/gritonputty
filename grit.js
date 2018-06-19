@@ -341,7 +341,7 @@ var checkAddNewLetter = function() {
           document.querySelector("[data-state-path=letters][data-state-char=" + letters[i] + "]")});
         break;
       }
-  } else if(state.punctuations.length <= state.numbers.length && state.numbers.length != 10) {
+  } else if(state.punctuations.length <= state.numbers.length || state.numbers.length == 10) {
     // TODO: is this hacky?
     var nextPunct = document.querySelector("#punctuation .symbol-enable:not(.active)");
     if(nextPunct)
