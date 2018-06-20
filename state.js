@@ -18,6 +18,11 @@ state = {
     return [path[0], obj, key];
   },
 
+  updateCss: function(id, key, value) {
+    console.log("Setting css: ", id, ":", key,"=",value)
+    document.getElementById(id).style[key] = value;
+  },
+
   readElem: function(event) {
     var elem = event.target;
     var path = elem.getAttribute("data-state-path") || elem.id;
@@ -32,6 +37,10 @@ state = {
         break;
       case "bool":
         obj[key] = elem.checked;
+        break;
+      case "css":
+        obj[key] = elem.value;
+        state.updateCss(elem.getAttribute("data-css-id"), elem.getAttribute("data-css-key"), elem.value);
         break;
       default:
         obj[key] = elem.value;
@@ -58,7 +67,7 @@ state = {
         obj[key] = elem.checked;
       return;
     }
-    if(obj[key] && (elem.tagName == "INPUT" || elem.tagName == "SELECT"))
+    if(obj.hasOwnProperty(key) && (elem.tagName == "INPUT" || elem.tagName == "SELECT"))
       elem.value = obj[key];
     else if(obj[key] !== null && obj[key] !== undefined)
       elem.innerHTML = state.displayValue(obj[key], type);
@@ -150,6 +159,12 @@ state = {
     for(var i = 0; i < elems.length; i++) {
       state.setElem(elems[i], elems[i].getAttribute("data-state-default"));
       elems[i].addEventListener("change", state.readElem);
+    }
+
+    var cssElems = document.querySelectorAll("[data-state-type=css]");
+    for(var i = 0; i < cssElems.length; i++) {
+      var elem = cssElems[i];
+      state.updateCss(elem.getAttribute("data-css-id"), elem.getAttribute("data-css-key"), elem.value);
     }
 
     var arrays = document.querySelectorAll("[data-state-type$=array]");

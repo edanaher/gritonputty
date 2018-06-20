@@ -47,6 +47,23 @@ Weights for targeting generated letters:
 <li><label>Below threshold: <input type="text" id="targetTypeWeights-threshold" data-state-type="float" value="1" /></label></li>
 <li><label>Pivot Exponent: <input type="text" id="targetTypeWeights-pivotExponent" data-state-type="float" value="2" /></label></li>
 </ul>
+<p><label>Font:</label>
+  <select id="font-family" data-state-type="css" data-css-id="words" data-css-key="fontFamily" data-state-default="" />
+    <option value="">System Default</option>
+    <option value="serif">System Default Serif</option>
+    <option value="sans">System Default Sans Serif</option>
+    <option value="mono">System Default Monospaced</option>
+    <option>DejaVu Sans</option>
+    <option>DejaVu Sans Mono</option>
+    <option>DejaVu</option>
+    <option>Verdana</option>
+    <option>Georgia</option>
+    <option>Helvetica</option>
+    <option>Arial</option>
+    <option>Times New Roman</option>
+  </select></p>
+<p><label>Font size:</label>
+  <input type="text" id="font-size" data-state-type="css" data-css-id="words" data-css-key="fontSize" data-state-default="18" /></p>
 <p><label><input type="checkbox" id="waitOnTypo" data-state-type="bool" /> Don't move cursor on typos</label></p>
 <p><span id="load-twiddler-config" class="button">Load</span> twiddler config from <input id="twiddler-config-file" type="file"/></p>
 <p>Translate layout from
