@@ -357,7 +357,8 @@ var checkAddNewLetter = function() {
 }
 
 var checkLetter = function(event) {
-  if(document.querySelector(":focus")) return;
+  var focusedElem =  document.querySelector(":focus")
+  if(focusedElem && focusedElem.id != "dummy-input") return;
   if(!event.ctrlKey && !event.altKey)
     event.preventDefault();
   var active = document.querySelector("#words .active");

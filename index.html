@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="grit.css" />
 </head>
 <body>
-<div class="button-wrapper"><span id="start" class="button">Start</span><span id="wrong-letter"></span></div>
+<div class="button-wrapper"><span id="start" class="button">Start</span><span id="wrong-letter"></span><input id="dummy-input" class="hidden"/></div>
 
 <div id="words"></div>
 <div id="twiddler-container"><div id="twiddler-display"></div></div>
@@ -23,6 +23,7 @@
 <label><input type="checkbox" id="rotate-twiddler" data-state-type="bool" data-state-default="off" />Rotate twiddler display</label><br />
 <label><input type="checkbox" id="mirror-twiddler" data-state-type="bool" data-state-default="off" />Mirror twiddler display</label><br />
 <label><input type="checkbox" id="flip-twiddler" data-state-type="bool" data-state-default="off" />Flip twiddler display</label><br />
+<label><input type="checkbox" id="show-dummy-input" data-state-type="bool" data-state-default="off" />Hack bringing up keyboard on mobile by showing an empty text bos in the upper right</label><br />
 
 <label>Sentence length: <input type="text" id="sentenceLength" data-state-type="int" value="100" /></label>
 <div class="button-wrapper"><span id="reset" class="button">Reset</span></div>

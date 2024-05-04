@@ -27,6 +27,15 @@ keyboard = {
       keyTranslationTable = table;
   },
 
+  toggleDummyInput: function() {
+    var dummyInput = document.getElementById("dummy-input");
+    var val = document.getElementById("show-dummy-input").checked;
+    if(val)
+      dummyInput.classList.remove("hidden");
+    else
+      dummyInput.classList.add("hidden");
+  },
+
   toggleTwiddlerClass: function(checkbox, clas, inverted) {
     var twiddlerDisplay = document.getElementById("twiddler-display");
     var val = document.getElementById(checkbox).checked;
@@ -52,9 +61,11 @@ keyboard = {
     document.getElementById("mirror-twiddler").addEventListener("change", keyboard.rotateTwiddler);
     document.getElementById("flip-twiddler").addEventListener("change", keyboard.rotateTwiddler);
     document.getElementById("show-twiddler").addEventListener("change", keyboard.rotateTwiddler);
+    document.getElementById("show-dummy-input").addEventListener("change", keyboard.toggleDummyInput);
     keyTranslationTable = {};
     keyboard.updateTable();
     keyboard.rotateTwiddler();
+    keyboard.toggleDummyInput();
     if(state.twiddlerBinConfig)
       state.twiddlerLayout = new TwiddlerConfigV5(state.twiddlerBinConfig);
     drawTwiddler();

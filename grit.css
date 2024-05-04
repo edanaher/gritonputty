@@ -121,3 +121,6 @@
 
 #twiddler-display.flipped { transform: scaleY(-1); }
 #twiddler-display.rotated.flipped { transform: scaleX(-1); }
+
+#dummy-input { position: absolute; right: 10px; width: 3em; }
+#dummy-input.hidden { display: none; }
